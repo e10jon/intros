@@ -3,7 +3,7 @@ import EmailProvider from "next-auth/providers/email";
 import { getEnvCred } from "../../../../get-env-cred";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { Adapter } from "next-auth/adapters";
-import { prisma } from "../../../../container";
+import { prisma } from "../../../../prisma";
 
 export const authOptions: AuthOptions = {
   adapter: <Adapter>PrismaAdapter(prisma),

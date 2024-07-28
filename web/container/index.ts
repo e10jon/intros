@@ -1,8 +1,7 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "../app/api/auth/[...nextauth]/route";
-
-export const prisma = new PrismaClient();
+import { prisma } from "../prisma";
 
 export class Container {
   private constructor() {}
@@ -10,7 +9,6 @@ export class Container {
   static async init() {
     const cnt = new Container();
     cnt.session = await getServerSession(authOptions);
-    console.log("user", cnt.session?.user);
     return cnt;
   }
 
@@ -24,7 +22,7 @@ export class Container {
     },
   });
 
-  private session?: Session;
+  public session?: Session;
 
   prisma = prisma.$extends(this.prismaExtension);
 
