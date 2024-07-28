@@ -1,27 +1,14 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "../app/[...auth]";
-import { IncomingMessage, Server, ServerResponse } from "http";
-import { NextApiRequestCookies } from "next/dist/server/api-utils";
-
-type ContainerRequest =
-  | NextApiRequest
-  | (IncomingMessage & { cookies: NextApiRequestCookies });
-
-type ContainerResponse = NextApiResponse | ServerResponse<IncomingMessage>;
 
 export class Container {
-  private constructor(
-    private request: ContainerRequest,
-    private response: ContainerResponse
-  ) {}
+  private constructor() {}
 
-  static async init(request: ContainerRequest, response: ContainerResponse) {
-    const cnt = new Container(request, response);
-    cnt.session = await getServerSession(request, response, authOptions);
-
-    console.log("user", cnt.session.user);
+  static async init() {
+    const cnt = new Container();
+    cnt.session = await getServerSession(authOptions);
+    console.log("user", cnt.session?.user);
     return cnt;
   }
 
