@@ -29,6 +29,7 @@
     "**/*.tsx"
   ],
   "exclude": [
+    ".next",
     "node_modules"
   ]
 }

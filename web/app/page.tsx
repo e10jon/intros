@@ -1,11 +1,11 @@
-import { Container } from "../container";
+"use client";
+
+import { signIn } from "next-auth/react";
 
 export default async function Page() {
-  const data = await (async () => {
-    const cnt = await Container.init();
-    const users = await cnt.prisma.user.findMany();
-    return { users };
-  })();
-
-  return <div>hello world data {JSON.stringify(data)}</div>;
+  return (
+    <div>
+      <button onClick={() => signIn()}>Sign In</button>
+    </div>
+  );
 }
