@@ -35,14 +35,6 @@ export default function RootLayout() {
     SplashScreen.hideAsync();
   }, [loaded]);
 
-  const getAuthTokenFromClerk = async () => {
-    const clerk = getClerkInstance();
-    const token = await clerk.session?.getToken();
-    return token;
-    // can use this token to pass to backend like:
-    // fetch('http://example.com/', { headers: { Authorization: token })
-  };
-
   if (!loaded) return null;
 
   return (
