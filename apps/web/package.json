@@ -1,4 +1,5 @@
 {
+  "name": "intros-web",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
