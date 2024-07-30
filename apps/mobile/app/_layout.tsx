@@ -1,8 +1,4 @@
-import {
-  ClerkProvider,
-  ClerkLoaded,
-  getClerkInstance,
-} from "@clerk/clerk-expo";
+import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
 import {
   DarkTheme,
   DefaultTheme,

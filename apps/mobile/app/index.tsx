@@ -5,5 +5,5 @@ export default function InitalRouting() {
 
   if (!rootNavigationState?.key) return null;
 
-  return <Redirect href={"/sign-up"} />;
+  return <Redirect href={"/home"} />;
 }
