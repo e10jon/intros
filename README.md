@@ -2,4 +2,4 @@
 
 ## To dev:
 
-1. `turbo dev`
+1. `npm run dev`

@@ -2,6 +2,7 @@
   "name": "intros-web",
   "scripts": {
     "dev": "next dev",
+    "ngrok": "ngrok start web --config ngrok.yml",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

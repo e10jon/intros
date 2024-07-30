@@ -8,6 +8,10 @@
     "dev": {
       "persistent": true,
       "cache": false
+    },
+    "ngrok": {
+      "persistent": true,
+      "cache": false
     }
   }
 }

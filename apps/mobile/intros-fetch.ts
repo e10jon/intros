@@ -8,7 +8,7 @@ export const introsFetch = async (path: string) => {
 
   const res = await fetch(host + path, {
     headers: {
-      ...(token ? { Authorization: token } : null),
+      ...(token ? { Authorization: token } : undefined),
     },
   });
 

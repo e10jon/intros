@@ -1,6 +1,9 @@
 {
   "name": "intros",
   "private": true,
+  "scripts": {
+    "dev": "turbo dev ngrok"
+  },
   "devDependencies": {
     "turbo": "^2.0.9"
   },
