@@ -1,6 +1,6 @@
 import { Webhook } from "svix";
 import { getEnvCred } from "@/get-env-cred";
-import superjson from "superjson";
+import { inspect } from "@/inspect";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -11,8 +11,8 @@ export async function POST(request: Request) {
     return new Response("Bad Request", { status: 400 });
   }
 
-  const json = superjson.stringify(body);
-  console.log(json);
+  const json = JSON.parse(body);
+  inspect(json);
 
   return new Response("OK", { status: 200 });
 }
