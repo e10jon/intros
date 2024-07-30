@@ -12,6 +12,10 @@
     "ngrok": {
       "persistent": true,
       "cache": false
+    },
+    "worker": {
+      "persistent": true,
+      "cache": false
     }
   }
 }

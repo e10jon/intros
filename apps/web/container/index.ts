@@ -1,6 +1,9 @@
 import { auth, User as ClerkUser, currentUser } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
+import { Queue } from "bullmq";
+import { defaultQueueName } from "@/bullmq/queue";
+import { connection } from "@/bullmq/connection";
 
 export class Container {
   private constructor() {}
@@ -34,10 +37,14 @@ export class Container {
     return this._currentUser;
   }
 
-  /** Direct access to prisma client. */
+  /** Direct access to Prisma client. */
   prisma = prisma.$extends(this.prismaExtension);
 
+  /** Direct access to BullMQ queue. */
+  queue = new Queue(defaultQueueName, { connection });
+
   sendEmailToUser = async () => {
+    await this.queue.add("testing", { hello: "world" });
     console.log("Sending email to user");
   };
 

@@ -1,5 +1,6 @@
 const env = {
-  expoPublicClerkPublishableKey: process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  clerkPublishableKey: process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  introsApiHost: process.env.EXPO_PUBLIC_INTROS_API_HOST,
 };
 
 export const getEnvCred = (key: keyof typeof env): string => {
