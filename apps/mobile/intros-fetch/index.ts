@@ -1,9 +1,10 @@
 import { getClerkInstance } from "@clerk/clerk-expo";
-import { getEnvCred } from "./get-env-cred";
+import { getEnvCred } from "../get-env-cred";
+import { Data, Path } from "./types";
 
 const host = `https://${getEnvCred("introsApiHost")}`;
 
-export const introsFetch = async (path: string) => {
+export const introsFetch = async <P extends Path>(path: P) => {
   const clerk = getClerkInstance();
   const token = await clerk.session?.getToken();
 
@@ -13,5 +14,5 @@ export const introsFetch = async (path: string) => {
     },
   });
 
-  return res.json();
+  return res.json() as Data<P>;
 };

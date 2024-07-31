@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
 
-export type Data = {
-  paymentIntentClientSecret: string | null;
-  ephemeralKeySecret: string | null | undefined;
-  stripeCustomerId: string;
-};
+import { Data } from "../../../../mobile/intros-fetch/types";
 
-export async function POST(): Promise<NextResponse<Data>> {
+export async function POST(): Promise<
+  NextResponse<Data<"/api/payment-intent">>
+> {
   const cnt = await Container.init();
 
   await cnt.createStripeCustomerIdIfNotExists();
