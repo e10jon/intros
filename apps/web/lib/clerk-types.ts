@@ -68,7 +68,7 @@ export type WebhookPayload<
             expire_at: number;
             status: "verified";
             strategy: "phone_code";
-          };
+          } | null;
         }[];
         primary_email_address_id: string;
         primary_phone_number_id: string | null;
