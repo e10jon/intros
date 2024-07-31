@@ -1,5 +1,9 @@
 export type WebhookPayload<
-  Type extends "session.created" | "user.created" | string = string
+  Type extends
+    | "session.created"
+    | "user.created"
+    | "user.updated"
+    | string = string
 > = {
   data: Type extends "session.created"
     ? {
@@ -15,7 +19,7 @@ export type WebhookPayload<
         updated_at: number;
         user_id: string;
       }
-    : Type extends "user.created"
+    : Type extends "user.created" | "user.updated"
     ? {
         backup_code_enabled: boolean;
         banned: boolean;
@@ -53,7 +57,19 @@ export type WebhookPayload<
         object: "user";
         passkeys: [];
         password_enabled: boolean;
-        phone_numbers: [];
+        phone_numbers: {
+          created_at: number;
+          id: string;
+          phone_number: string;
+          reserved: boolean;
+          reserved_for_second_factor: boolean;
+          verification: {
+            attempts: number;
+            expire_at: number;
+            status: "verified";
+            strategy: "phone_code";
+          };
+        }[];
         primary_email_address_id: string;
         primary_phone_number_id: string | null;
         primary_web3_wallet_id: string | null;

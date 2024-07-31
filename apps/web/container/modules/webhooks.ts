@@ -18,28 +18,27 @@ export class WebhooksModule {
       email: payload.data.email_addresses[0].email_address,
       emailIsVerified:
         payload.data.email_addresses[0].verification.status === "verified",
+      phone: payload.data.phone_numbers[0].phone_number,
+      phoneIsVerified:
+        payload.data.phone_numbers[0].verification.status === "verified",
       firstName: payload.data.first_name,
       lastName: payload.data.last_name,
     });
   };
 
-  private upsertUser = async ({
-    clerkId,
-    email,
-    emailIsVerified,
-    firstName,
-    lastName,
-  }: {
+  private upsertUser = async (args: {
     clerkId: string;
     email?: string;
     emailIsVerified?: boolean;
+    phone?: string;
+    phoneIsVerified?: boolean;
     firstName?: string | null;
     lastName?: string | null;
   }) => {
     await this.cnt.prisma.user.upsert({
-      where: { clerkId },
-      create: { clerkId, email, emailIsVerified, firstName, lastName },
-      update: { email, firstName, lastName },
+      where: { clerkId: args.clerkId },
+      create: args,
+      update: args,
     });
   };
 }

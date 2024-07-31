@@ -44,6 +44,19 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="verify-phone"
+        options={{
+          title: "Verify Phone",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "phone-portrait" : "phone-portrait-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
