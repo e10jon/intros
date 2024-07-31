@@ -18,13 +18,13 @@ export async function POST(request: Request) {
 
   const cnt = await Container.init();
 
-  if (payload.type === "session.created") {
-    await cnt.webhooks.captureSessionCreatedEvent(
-      payload as WebhookPayload<"session.created">
-    );
-  } else if (payload.type === "user.created") {
+  if (payload.type === "user.created") {
     await cnt.webhooks.captureUserCreatedEvent(
       payload as WebhookPayload<"user.created">
+    );
+  } else if (payload.type === "user.updated") {
+    await cnt.webhooks.captureUserUpdatedEvent(
+      payload as WebhookPayload<"user.updated">
     );
   }
 

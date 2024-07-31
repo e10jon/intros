@@ -4,41 +4,29 @@ import { Container } from "..";
 export class WebhooksModule {
   constructor(private cnt: Container) {}
 
-  captureSessionCreatedEvent = async (
-    payload: WebhookPayload<"session.created">
+  private upsertUser = async (
+    payload: WebhookPayload<"user.created" | "user.updated">
   ) => {
-    await this.upsertUser({
-      clerkId: payload.data.user_id,
-    });
-  };
+    const phoneNumber = payload.data.phone_numbers[0];
+    const emailAddress = payload.data.email_addresses[0];
 
-  captureUserCreatedEvent = async (payload: WebhookPayload<"user.created">) => {
-    await this.upsertUser({
+    const data = {
       clerkId: payload.data.id,
-      email: payload.data.email_addresses[0].email_address,
-      emailIsVerified:
-        payload.data.email_addresses[0].verification.status === "verified",
-      phone: payload.data.phone_numbers[0].phone_number,
-      phoneIsVerified:
-        payload.data.phone_numbers[0].verification.status === "verified",
+      email: emailAddress.email_address,
+      emailIsVerified: emailAddress?.verification.status === "verified",
+      phone: phoneNumber?.phone_number,
+      phoneIsVerified: phoneNumber?.verification.status === "verified",
       firstName: payload.data.first_name,
       lastName: payload.data.last_name,
+    };
+
+    await this.cnt.prisma.user.upsert({
+      where: { clerkId: data.clerkId },
+      create: data,
+      update: data,
     });
   };
 
-  private upsertUser = async (args: {
-    clerkId: string;
-    email?: string;
-    emailIsVerified?: boolean;
-    phone?: string;
-    phoneIsVerified?: boolean;
-    firstName?: string | null;
-    lastName?: string | null;
-  }) => {
-    await this.cnt.prisma.user.upsert({
-      where: { clerkId: args.clerkId },
-      create: args,
-      update: args,
-    });
-  };
+  captureUserCreatedEvent = this.upsertUser;
+  captureUserUpdatedEvent = this.upsertUser;
 }
