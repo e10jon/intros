@@ -24,10 +24,7 @@ export default function TabLayout() {
         options={{
           title: "Sign Up",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-            />
+            <TabBarIcon name={focused ? "add" : "add-outline"} color={color} />
           ),
         }}
       />
@@ -38,7 +35,7 @@ export default function TabLayout() {
           title: "Sign In",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "home" : "home-outline"}
+              name={focused ? "log-in" : "log-in-outline"}
               color={color}
             />
           ),
@@ -52,6 +49,19 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "phone-portrait" : "phone-portrait-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="payment"
+        options={{
+          title: "Payment",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "card" : "card-outline"}
               color={color}
             />
           ),
