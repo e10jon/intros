@@ -1,5 +1,5 @@
 import { auth, User as ClerkUser, currentUser } from "@clerk/nextjs/server";
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { prisma } from "../prisma";
 import { Queue } from "bullmq";
 import { defaultQueueName } from "@/bullmq/queue";
@@ -7,6 +7,7 @@ import { connection } from "@/bullmq/connection";
 import Stripe from "stripe";
 import { getEnvCred } from "@/get-env-cred";
 import { WebhooksModule } from "./modules/webhooks";
+import { StripeModule } from "./modules/stripe";
 
 export class Container {
   private constructor() {}
@@ -30,26 +31,53 @@ export class Container {
   /** The currently auth'd object. */
   currentAuth?: ReturnType<typeof auth>;
 
-  private _currentUser?: Promise<ClerkUser | null>;
+  private _currentClerkUser?: Promise<ClerkUser | null>;
+  protected _currentPrismaUser?: Promise<User | null>;
 
   /** A promise that returns the authenticated user. */
-  get currentUser() {
-    if (typeof this._currentUser === "undefined") {
-      this._currentUser = currentUser();
+  get currentClerkUser() {
+    if (typeof this._currentClerkUser === "undefined") {
+      this._currentClerkUser = currentUser();
     }
-    return this._currentUser;
+    return this._currentClerkUser;
   }
 
-  getCurrentPrismaUser = async () => {
-    const user = await this.currentUser;
-    if (!user) return null;
-    return await prisma.user.findUnique({ where: { id: user.id } });
-  };
+  get currentPrismaUser() {
+    if (typeof this._currentPrismaUser === "undefined") {
+      this._currentPrismaUser = this.currentClerkUser.then(
+        (currentClerkUser) => {
+          if (!currentClerkUser)
+            throw new Error("No current clerk user found!");
+          return prisma.user.findUnique({
+            where: { clerkId: currentClerkUser.id },
+          });
+        }
+      );
+    }
+
+    return this._currentPrismaUser;
+  }
 
   getCurrentPrismaUserOrThrow = async () => {
-    const user = await this.getCurrentPrismaUser();
-    if (!user) throw new Error("No current user found!");
+    const user = await this.currentPrismaUser;
+    if (!user) throw new Error("No current prisma user found!");
     return user;
+  };
+
+  /** Will use the Stripe API to create a customer and save the ID in Prisma,
+   * if the current user does not already have one. */
+  createStripeCustomerIdIfNotExists = async () => {
+    const user = await this.getCurrentPrismaUserOrThrow();
+    if (user.stripeCustomerId) return;
+
+    const stripeCustomer = await this.stripe.apiClient.customers.create({
+      email: user.email || undefined,
+    });
+
+    this._currentPrismaUser = prisma.user.update({
+      where: { id: user.id },
+      data: { stripeCustomerId: stripeCustomer.id },
+    });
   };
 
   /** Direct access to Prisma client. */
@@ -58,9 +86,7 @@ export class Container {
   /** Direct access to BullMQ queue. */
   queue = new Queue(defaultQueueName, { connection });
 
-  /** Direct access to Stripe API client. */
-  stripe = new Stripe(getEnvCred("stripeSecretKey"));
-
+  stripe = new StripeModule(this);
   webhooks = new WebhooksModule(this);
 
   helloWorld = () => ({ hello: "world" });

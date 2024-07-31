@@ -3,7 +3,7 @@ import { Container } from "../container";
 
 export default async function Page() {
   const cnt = await Container.init();
-  const user = await cnt.currentUser;
+  const clerkUser = await cnt.currentClerkUser;
 
   return (
     <div>
@@ -13,7 +13,7 @@ export default async function Page() {
       <SignedIn>
         <UserButton />
       </SignedIn>
-      home {JSON.stringify(user)}
+      home {JSON.stringify(clerkUser)}
     </div>
   );
 }
