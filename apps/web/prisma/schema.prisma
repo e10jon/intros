@@ -25,6 +25,7 @@ enum UserStatus {
 
 model User {
   id                          String     @id @default(cuid())
+  clerkId                     String     @unique
   status                      UserStatus @default(Active)
   firstName                   String?
   middleName                  String?
@@ -35,6 +36,7 @@ model User {
   phoneIsVerified             Boolean    @default(false)
   plaidIdentityVerificationId String?
   identityIsVerified          Boolean    @default(false)
+  stripeCustomerId            String?
   stripePaymentIntentId       String?
   paymentIsActive             Boolean    @default(false)
 

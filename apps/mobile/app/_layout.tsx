@@ -9,6 +9,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { getEnvCred } from "@/get-env-cred";
@@ -17,6 +18,7 @@ import { getEnvCred } from "@/get-env-cred";
 SplashScreen.preventAutoHideAsync();
 
 const clerkPublishableKey = getEnvCred("clerkPublishableKey");
+const stripePublishableKey = getEnvCred("stripePublishableKey");
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -32,15 +34,17 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <ClerkProvider publishableKey={clerkPublishableKey}>
-        <ClerkLoaded>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </ClerkLoaded>
-      </ClerkProvider>
-    </ThemeProvider>
+    <StripeProvider publishableKey={stripePublishableKey}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <ClerkProvider publishableKey={clerkPublishableKey}>
+          <ClerkLoaded>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </ClerkLoaded>
+        </ClerkProvider>
+      </ThemeProvider>
+    </StripeProvider>
   );
 }

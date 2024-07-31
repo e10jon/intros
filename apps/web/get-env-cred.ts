@@ -2,6 +2,8 @@ const env = {
   databaseUrl: process.env.DATABASE_URL,
   redisUrl: process.env.REDIS_URL,
   sendgridApiKey: process.env.SENDGRID_API_KEY,
+  stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY,
   svixWebhookSecret: process.env.SVIX_WEBHOOK_SECRET,
 };
 

@@ -1,6 +1,8 @@
 import { Webhook } from "svix";
 import { getEnvCred } from "@/get-env-cred";
 import { inspect } from "@/inspect";
+import { WebhookPayload } from "@/lib/clerk-types";
+import { Container } from "@/container";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -11,8 +13,20 @@ export async function POST(request: Request) {
     return new Response("Bad Request", { status: 400 });
   }
 
-  const json = JSON.parse(body);
-  inspect(json);
+  const payload = JSON.parse(body) as WebhookPayload;
+  inspect(payload);
+
+  const cnt = await Container.init();
+
+  if (payload.type === "session.created") {
+    await cnt.webhooks.captureSessionCreatedEvent(
+      payload as WebhookPayload<"session.created">
+    );
+  } else if (payload.type === "user.created") {
+    await cnt.webhooks.captureUserCreatedEvent(
+      payload as WebhookPayload<"user.created">
+    );
+  }
 
   return new Response("OK", { status: 200 });
 }
