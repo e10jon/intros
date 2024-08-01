@@ -61,12 +61,16 @@ export class StripeModule {
         : payload.data.object.customer?.id;
     if (!stripeCustomerId) return;
 
-    // this runs via webhook, there is no current user
-    await this.cnt.prisma.user.update({
+    const user = await this.cnt.prisma.user.findUnique({
       where: { stripeCustomerId },
-      data: {
+    });
+    if (!user)
+      throw new Error(`No user found for stripeCustomerId ${stripeCustomerId}`);
+
+    await this.cnt.clerk.apiClient.users.updateUserMetadata(user.clerkId, {
+      publicMetadata: {
         stripeSubscriptionId,
-        paymentIsActive: true,
+        subscriptionIsActive: true,
       },
     });
   }

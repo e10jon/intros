@@ -1,7 +1,7 @@
 import { Webhook } from "svix";
 import { getEnvCred } from "@/get-env-cred";
 import { inspect } from "@/inspect";
-import { WebhookPayload } from "@/lib/clerk-types";
+import { WebhookPayload } from "@/container/modules/clerk/types";
 import { Container } from "@/container";
 
 export async function POST(request: Request) {

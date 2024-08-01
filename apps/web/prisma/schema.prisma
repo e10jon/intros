@@ -24,21 +24,11 @@ enum UserStatus {
 }
 
 model User {
-  id                          String     @id @default(cuid())
-  clerkId                     String     @unique
-  status                      UserStatus @default(Active)
-  firstName                   String?
-  middleName                  String?
-  lastName                    String?
-  email                       String?    @unique
-  emailIsVerified             Boolean    @default(false)
-  phone                       String?    @unique
-  phoneIsVerified             Boolean    @default(false)
-  plaidIdentityVerificationId String?
-  identityIsVerified          Boolean    @default(false)
-  stripeCustomerId            String?    @unique
-  stripeSubscriptionId        String?
-  paymentIsActive             Boolean    @default(false)
+  id               String  @id @default(cuid())
+  clerkId          String  @unique
+  email            String? @unique
+  phone            String? @unique
+  stripeCustomerId String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
