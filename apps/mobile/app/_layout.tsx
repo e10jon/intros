@@ -13,6 +13,7 @@ import { StripeProvider } from "@stripe/stripe-react-native";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { getEnvCred } from "@/get-env-cred";
+import { tokenCache } from "@/lib/token-cache";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -36,7 +37,10 @@ export default function RootLayout() {
   return (
     <StripeProvider publishableKey={stripePublishableKey}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <ClerkProvider publishableKey={clerkPublishableKey}>
+        <ClerkProvider
+          publishableKey={clerkPublishableKey}
+          tokenCache={tokenCache}
+        >
           <ClerkLoaded>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

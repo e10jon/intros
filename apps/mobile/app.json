@@ -15,7 +15,9 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["intros"]
+        "LSApplicationQueriesSchemes": [
+          "intros"
+        ]
       }
     },
     "android": {
@@ -31,11 +33,14 @@
     },
     "plugins": [
       "expo-router",
-      ["@stripe/stripe-react-native",
+      [
+        "@stripe/stripe-react-native",
         {
           "merchantIdentifier": "O+T",
           "enableGooglePay": false
-        }]
+        }
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
