@@ -1,5 +1,5 @@
-import { introsFetch } from "@/intros-fetch";
-import { Data } from "@/intros-fetch/types";
+import { introsFetch } from "@/lib/intros-fetch";
+import { Data } from "../../../web/types";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
 import { Button, Text, View } from "react-native";

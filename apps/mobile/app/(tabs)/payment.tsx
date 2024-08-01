@@ -1,4 +1,4 @@
-import { introsFetch } from "@/intros-fetch";
+import { introsFetch } from "@/lib/intros-fetch";
 import { useUser } from "@clerk/clerk-expo";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useEffect } from "react";
