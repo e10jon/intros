@@ -8,16 +8,16 @@ export default function Payment() {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const initializePaymentSheet = async () => {
-    const { clientSecret, ephemeralKeySecret, stripeCustomerId } =
-      await introsFetch("/api/payment-intent", { method: "POST" });
+    const subscription = await introsFetch("/api/payment/subscription", {
+      method: "POST",
+    });
 
-    if (!ephemeralKeySecret || !clientSecret)
-      throw new Error("Invalid payment intent");
+    const clientSecret =
+      subscription.latest_invoice.payment_intent?.client_secret;
+    if (!clientSecret) throw new Error("Can't find client secret");
 
     const { error } = await initPaymentSheet({
       merchantDisplayName: "Intros",
-      customerId: stripeCustomerId,
-      customerEphemeralKeySecret: ephemeralKeySecret,
       paymentIntentClientSecret: clientSecret,
       returnURL: `https://google.com`, // TODO: use router keys
     });

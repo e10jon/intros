@@ -63,10 +63,10 @@ export class Container {
   };
 
   /** Will use the Stripe API to create a customer and save the ID in Prisma,
-   * if the current user does not already have one. */
-  createStripeCustomerIdIfNotExists = async () => {
+   * if the current user does not already have one. Returns the customer ID string. */
+  getStripeCustomerId = async () => {
     const user = await this.getCurrentPrismaUserOrThrow();
-    if (user.stripeCustomerId) return;
+    if (user.stripeCustomerId) return user.stripeCustomerId;
 
     const stripeCustomer = await this.stripe.apiClient.customers.create({
       email: user.email || undefined,
@@ -76,6 +76,8 @@ export class Container {
       where: { id: user.id },
       data: { stripeCustomerId: stripeCustomer.id },
     });
+
+    return stripeCustomer.id;
   };
 
   /** Direct access to Prisma client. */

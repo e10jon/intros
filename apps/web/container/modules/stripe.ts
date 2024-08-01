@@ -3,34 +3,33 @@ import { Container } from "..";
 import Stripe from "stripe";
 import { getEnvCred } from "@/get-env-cred";
 
+export type CreateSubscription = Stripe.Response<
+  Stripe.Subscription & {
+    latest_invoice: Stripe.Invoice & {
+      payment_intent: Stripe.PaymentIntent;
+    };
+    pending_setup_intent?: Stripe.SetupIntent;
+  }
+>;
+
 export class StripeModule {
   constructor(private cnt: Container) {}
 
   /** Direct access to Stripe API client. */
   apiClient = new Stripe(getEnvCred("stripeSecretKey"));
 
-  /** Creates a PaymentIntent intended to be used by the frontend. */
-  async createPaymentIntent(amount: number, currency: string) {
-    const currentPrismaUser = await this.cnt.getCurrentPrismaUserOrThrow();
-    if (!currentPrismaUser.stripeCustomerId)
-      throw new Error("No Stripe customer ID");
+  async createSubscription() {
+    const priceId = getEnvCred("stripePriceId");
+    const customerId = await this.cnt.getStripeCustomerId();
 
-    const ephemeralKey = await this.apiClient.ephemeralKeys.create(
-      { customer: currentPrismaUser.stripeCustomerId },
-      { apiVersion: "2024-06-20" }
-    );
+    const subscription = (await this.apiClient.subscriptions.create({
+      customer: customerId,
+      items: [{ price: priceId, quantity: 1 }],
+      payment_behavior: "default_incomplete",
+      payment_settings: { save_default_payment_method: "on_subscription" },
+      expand: ["latest_invoice.payment_intent", "pending_setup_intent"],
+    })) as CreateSubscription;
 
-    const paymentIntent = await this.apiClient.paymentIntents.create({
-      amount,
-      currency,
-      customer: currentPrismaUser.stripeCustomerId,
-      automatic_payment_methods: { enabled: true },
-    });
-
-    return {
-      paymentIntent,
-      ephemeralKey,
-      stripeCustomerId: currentPrismaUser.stripeCustomerId,
-    };
+    return subscription;
   }
 }

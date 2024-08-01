@@ -4,6 +4,7 @@ const env = {
   sendgridApiKey: process.env.SENDGRID_API_KEY,
   stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+  stripePriceId: process.env.STRIPE_PRICE_ID,
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
   svixWebhookSecret: process.env.SVIX_WEBHOOK_SECRET,
 };
