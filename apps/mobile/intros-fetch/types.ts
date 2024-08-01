@@ -4,10 +4,10 @@ type Paths = typeof paths;
 export type Path = Paths[number];
 
 export type Data<P extends Path> = P extends "/api"
-  ? { hello: string }
+  ? { users: [] }
   : P extends "/api/payment-intent"
   ? {
-      paymentIntentClientSecret: string | null;
+      clientSecret: string | null;
       ephemeralKeySecret: string | null | undefined;
       stripeCustomerId: string;
     }

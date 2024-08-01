@@ -14,7 +14,7 @@ export async function POST(): Promise<
     await cnt.stripe.createPaymentIntent(1000, "usd");
 
   return NextResponse.json({
-    paymentIntentClientSecret: paymentIntent.client_secret,
+    clientSecret: paymentIntent.client_secret,
     ephemeralKeySecret: ephemeralKey.secret,
     stripeCustomerId,
   });

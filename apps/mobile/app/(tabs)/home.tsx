@@ -1,15 +1,17 @@
 import { introsFetch } from "@/intros-fetch";
+import { Data } from "@/intros-fetch/types";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, Text, View } from "react-native";
 
 export default function Home() {
   const { user } = useUser();
   const { signOut } = useAuth();
+  const [users, setUsers] = useState<Data<"/api">["users"] | null>(null);
 
   useEffect(() => {
     introsFetch("/api").then((data) => {
-      console.log(data);
+      setUsers(data.users);
     });
   }, []);
 
@@ -29,6 +31,8 @@ export default function Home() {
       <SignedOut>
         <Text>You are not signed in.</Text>
       </SignedOut>
+
+      {users && <Text>Users: {JSON.stringify(users)}</Text>}
     </View>
   );
 }
