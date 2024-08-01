@@ -67,6 +67,19 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="edit-profile"
+        options={{
+          title: "Edit Profile",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "person-circle" : "person-circle-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
