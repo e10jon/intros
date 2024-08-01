@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
-
-import { Data } from "@/types";
+import { Data } from "@intros/types";
 
 export async function POST(): Promise<
   NextResponse<Data<"/api/payment/subscription">>

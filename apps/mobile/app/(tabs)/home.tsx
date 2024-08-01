@@ -1,8 +1,8 @@
 import { introsFetch } from "@/lib/intros-fetch";
-import { Data } from "../../../web/types";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
 import { Button, Text, View } from "react-native";
+import { Data } from "@intros/types";
 
 export default function Home() {
   const { user } = useUser();

@@ -1,7 +1,5 @@
-import { Webhook } from "svix";
 import { getEnvCred } from "@/get-env-cred";
 import { inspect } from "@/inspect";
-import { WebhookPayload } from "@/lib/clerk-types";
 import { Container } from "@/container";
 
 const webhookSecret = getEnvCred("stripeWebhookSecret");
@@ -21,6 +19,10 @@ export async function POST(request: Request) {
   );
 
   inspect(payload);
+
+  if (payload.type === "invoice.paid") {
+    await cnt.stripe.captureInvoicePaidEvent(payload);
+  }
 
   return new Response("OK", { status: 200 });
 }

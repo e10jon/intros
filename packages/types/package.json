@@ -1,0 +1,13 @@
+{
+  "name": "@intros/types",
+  "type": "module",
+  "types": "src/index.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "latest",
+    "stripe": "latest"
+  }
+}

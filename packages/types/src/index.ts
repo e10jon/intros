@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { CreateSubscription } from "./container/modules/stripe";
+import Stripe from "stripe";
 
 const paths = ["/api", "/api/payment/subscription"] as const;
 
@@ -11,3 +11,12 @@ export type Data<P extends Path> = P extends "/api"
   : P extends "/api/payment/subscription"
   ? CreateSubscription
   : unknown;
+
+export type CreateSubscription = Stripe.Response<
+  Stripe.Subscription & {
+    latest_invoice: Stripe.Invoice & {
+      payment_intent: Stripe.PaymentIntent;
+    };
+    pending_setup_intent?: Stripe.SetupIntent;
+  }
+>;

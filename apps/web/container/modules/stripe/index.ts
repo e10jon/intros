@@ -1,16 +1,7 @@
-import { WebhookPayload } from "@/lib/clerk-types";
-import { Container } from "..";
 import Stripe from "stripe";
 import { getEnvCred } from "@/get-env-cred";
-
-export type CreateSubscription = Stripe.Response<
-  Stripe.Subscription & {
-    latest_invoice: Stripe.Invoice & {
-      payment_intent: Stripe.PaymentIntent;
-    };
-    pending_setup_intent?: Stripe.SetupIntent;
-  }
->;
+import { Container } from "@/container";
+import { CreateSubscription } from "@intros/types";
 
 export class StripeModule {
   constructor(private cnt: Container) {}
@@ -32,4 +23,6 @@ export class StripeModule {
 
     return subscription;
   }
+
+  async captureInvoicePaidEvent(payload: Stripe.InvoicePaidEvent) {}
 }
