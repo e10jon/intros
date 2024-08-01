@@ -1,4 +1,4 @@
-import { useSignIn } from "@clerk/clerk-expo";
+import { SignedIn, SignedOut, useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import { Text, TextInput, Button, View } from "react-native";
 import { useState, useCallback } from "react";
@@ -34,27 +34,33 @@ export default function SignIn() {
 
   return (
     <View>
-      <TextInput
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Email..."
-        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-        returnKeyType="next"
-      />
-      <TextInput
-        value={password}
-        placeholder="Password..."
-        secureTextEntry={true}
-        onChangeText={(password) => setPassword(password)}
-        returnKeyType="send"
-      />
-      <Button title="Sign In" onPress={onSignInPress} />
-      <View>
-        <Text>Don't have an account?</Text>
-        <Link href="/sign-up">
-          <Text>Sign up</Text>
-        </Link>
-      </View>
+      <SignedIn>
+        <Text>You are already signed in.</Text>
+      </SignedIn>
+
+      <SignedOut>
+        <TextInput
+          autoCapitalize="none"
+          value={emailAddress}
+          placeholder="Email..."
+          onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+          returnKeyType="next"
+        />
+        <TextInput
+          value={password}
+          placeholder="Password..."
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)}
+          returnKeyType="send"
+        />
+        <Button title="Sign In" onPress={onSignInPress} />
+        <View>
+          <Text>Don't have an account?</Text>
+          <Link href="/sign-up">
+            <Text>Sign up</Text>
+          </Link>
+        </View>
+      </SignedOut>
     </View>
   );
 }

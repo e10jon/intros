@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { TextInput, Button, View } from "react-native";
-import { useSignUp } from "@clerk/clerk-expo";
+import { TextInput, Button, View, Text } from "react-native";
+import { SignedIn, SignedOut, useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 
 export default function SignUp() {
@@ -54,33 +54,39 @@ export default function SignUp() {
 
   return (
     <View>
-      {!pendingVerification && (
-        <>
-          <TextInput
-            autoCapitalize="none"
-            value={emailAddress}
-            placeholder="Email..."
-            onChangeText={(email) => setEmailAddress(email)}
-          />
-          <TextInput
-            value={password}
-            placeholder="Password..."
-            secureTextEntry={true}
-            onChangeText={(password) => setPassword(password)}
-          />
-          <Button title="Sign Up" onPress={onSignUpPress} />
-        </>
-      )}
-      {pendingVerification && (
-        <>
-          <TextInput
-            value={code}
-            placeholder="Code..."
-            onChangeText={(code) => setCode(code)}
-          />
-          <Button title="Verify Email" onPress={onPressVerify} />
-        </>
-      )}
+      <SignedIn>
+        <Text>You are already signed in.</Text>
+      </SignedIn>
+
+      <SignedOut>
+        {!pendingVerification && (
+          <>
+            <TextInput
+              autoCapitalize="none"
+              value={emailAddress}
+              placeholder="Email..."
+              onChangeText={(email) => setEmailAddress(email)}
+            />
+            <TextInput
+              value={password}
+              placeholder="Password..."
+              secureTextEntry={true}
+              onChangeText={(password) => setPassword(password)}
+            />
+            <Button title="Sign Up" onPress={onSignUpPress} />
+          </>
+        )}
+        {pendingVerification && (
+          <>
+            <TextInput
+              value={code}
+              placeholder="Code..."
+              onChangeText={(code) => setCode(code)}
+            />
+            <Button title="Verify Email" onPress={onPressVerify} />
+          </>
+        )}
+      </SignedOut>
     </View>
   );
 }

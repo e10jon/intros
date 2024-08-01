@@ -41,11 +41,14 @@ export default function Payment() {
 
   return (
     <View>
-      {!isLoaded || !user ? (
-        <Text>Need to log in</Text>
-      ) : (
-        <Button onPress={openPaymentSheet} title="Payment" />
-      )}
+      {(() => {
+        if (!isLoaded) return <Text>Loading...</Text>;
+        if (!user) return <Text>Need to log in</Text>;
+        if (user.publicMetadata.stripeSubscriptionId)
+          return <Text>Already subscribed</Text>;
+
+        return <Button onPress={openPaymentSheet} title="Payment" />;
+      })()}
     </View>
   );
 }

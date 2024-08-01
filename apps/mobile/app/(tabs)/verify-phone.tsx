@@ -57,6 +57,8 @@ export default function VerifyPhone() {
       {(() => {
         if (!user) return <Text>Need to log in</Text>;
         if (successful) return <Text>Success!</Text>;
+        if (user.hasVerifiedPhoneNumber)
+          return <Text>Already verified phone.</Text>;
 
         if (pendingVerification) {
           return (
