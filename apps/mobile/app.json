@@ -13,7 +13,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["intros"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -30,7 +33,7 @@
       "expo-router",
       ["@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "TODO",
+          "merchantIdentifier": "O+T",
           "enableGooglePay": false
         }]
     ],

@@ -4,8 +4,6 @@ import { prisma } from "../prisma";
 import { Queue } from "bullmq";
 import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";
-import Stripe from "stripe";
-import { getEnvCred } from "@/get-env-cred";
 import { WebhooksModule } from "./modules/webhooks";
 import { StripeModule } from "./modules/stripe";
 

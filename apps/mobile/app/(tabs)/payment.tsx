@@ -1,7 +1,6 @@
-import { introsFetch } from "@/lib/intros-fetch";
+import { introsFetch, urlScheme } from "@/lib/intros-fetch";
 import { useUser } from "@clerk/clerk-expo";
 import { useStripe } from "@stripe/stripe-react-native";
-import { useEffect } from "react";
 import { View, Text, Button, Alert } from "react-native";
 
 export default function Payment() {
@@ -10,7 +9,7 @@ export default function Payment() {
 
   const initializePaymentSheet = async () => {
     const { clientSecret, ephemeralKeySecret, stripeCustomerId } =
-      await introsFetch("/api/payment-intent");
+      await introsFetch("/api/payment-intent", { method: "POST" });
 
     if (!ephemeralKeySecret || !clientSecret)
       throw new Error("Invalid payment intent");
@@ -20,20 +19,25 @@ export default function Payment() {
       customerId: stripeCustomerId,
       customerEphemeralKeySecret: ephemeralKeySecret,
       paymentIntentClientSecret: clientSecret,
+      returnURL: `https://google.com`, // TODO: use router keys
     });
 
-    if (!error) throw new Error("Failed to initialize payment sheet");
+    if (error)
+      throw new Error(
+        `Failed to initialize payment sheet ${JSON.stringify(error)}`
+      );
   };
 
   const openPaymentSheet = async () => {
     await initializePaymentSheet();
-    const { error } = await presentPaymentSheet();
-    console.log(error);
-  };
 
-  useEffect(() => {
-    initializePaymentSheet();
-  }, [isLoaded]);
+    const { error } = await presentPaymentSheet();
+
+    if (error)
+      throw new Error(
+        `Failed to present payment sheet ${JSON.stringify(error)}`
+      );
+  };
 
   return (
     <View>
