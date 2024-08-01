@@ -4,7 +4,7 @@ import { prisma } from "../prisma";
 import { Queue } from "bullmq";
 import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";
-import { WebhooksModule } from "./modules/webhooks";
+import { ClerkModule } from "./modules/clerk";
 import { StripeModule } from "./modules/stripe";
 
 export class Container {
@@ -56,28 +56,25 @@ export class Container {
     return this._currentPrismaUser;
   }
 
+  async updateCurrentPrismaUser(data: Prisma.UserUpdateInput) {
+    const currentClerkUser = await this.getCurrentClerkUserOrThrow();
+    this._currentPrismaUser = this.prisma.user.update({
+      where: { clerkId: currentClerkUser.id },
+      data,
+    });
+    return await this._currentPrismaUser;
+  }
+
+  getCurrentClerkUserOrThrow = async () => {
+    const user = await this.currentClerkUser;
+    if (!user) throw new Error("No current clerk user found!");
+    return user;
+  };
+
   getCurrentPrismaUserOrThrow = async () => {
     const user = await this.currentPrismaUser;
     if (!user) throw new Error("No current prisma user found!");
     return user;
-  };
-
-  /** Will use the Stripe API to create a customer and save the ID in Prisma,
-   * if the current user does not already have one. Returns the customer ID string. */
-  getStripeCustomerId = async () => {
-    const user = await this.getCurrentPrismaUserOrThrow();
-    if (user.stripeCustomerId) return user.stripeCustomerId;
-
-    const stripeCustomer = await this.stripe.apiClient.customers.create({
-      email: user.email || undefined,
-    });
-
-    this._currentPrismaUser = prisma.user.update({
-      where: { id: user.id },
-      data: { stripeCustomerId: stripeCustomer.id },
-    });
-
-    return stripeCustomer.id;
   };
 
   /** Direct access to Prisma client. */
@@ -87,7 +84,7 @@ export class Container {
   queue = new Queue(defaultQueueName, { connection });
 
   stripe = new StripeModule(this);
-  webhooks = new WebhooksModule(this);
+  clerk = new ClerkModule(this);
 
   helloWorld = () => ({ hello: "world" });
 }

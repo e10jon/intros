@@ -1,7 +1,7 @@
 import { WebhookPayload } from "@/lib/clerk-types";
 import { Container } from "..";
 
-export class WebhooksModule {
+export class ClerkModule {
   constructor(private cnt: Container) {}
 
   private upsertUser = async (

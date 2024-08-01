@@ -36,8 +36,8 @@ model User {
   phoneIsVerified             Boolean    @default(false)
   plaidIdentityVerificationId String?
   identityIsVerified          Boolean    @default(false)
-  stripeCustomerId            String?
-  stripePaymentIntentId       String?
+  stripeCustomerId            String?    @unique
+  stripeSubscriptionId        String?
   paymentIsActive             Boolean    @default(false)
 
   createdAt DateTime @default(now())

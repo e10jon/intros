@@ -18,18 +18,14 @@ export async function POST(request: Request) {
 
   const cnt = await Container.init();
 
-  try {
-    if (payload.type === "user.created") {
-      await cnt.webhooks.captureUserCreatedEvent(
-        payload as WebhookPayload<"user.created">
-      );
-    } else if (payload.type === "user.updated") {
-      await cnt.webhooks.captureUserUpdatedEvent(
-        payload as WebhookPayload<"user.updated">
-      );
-    }
-  } catch (e) {
-    inspect(e, "error");
+  if (payload.type === "user.created") {
+    await cnt.clerk.captureUserCreatedEvent(
+      payload as WebhookPayload<"user.created">
+    );
+  } else if (payload.type === "user.updated") {
+    await cnt.clerk.captureUserUpdatedEvent(
+      payload as WebhookPayload<"user.updated">
+    );
   }
 
   return new Response("OK", { status: 200 });
