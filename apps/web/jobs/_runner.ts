@@ -10,13 +10,13 @@ async function run() {
 
   console.info(`Running ${job}...`);
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const file = require(join(__dirname, "./", job));
 
   const cnt = await Container.init();
   await file.default(cnt);
 
   const endedAt = new Date();
+
   console.info(
     `Ran job ${job} in ${(endedAt.getTime() - startedAt.getTime()) / 1000}s!`
   );

@@ -6,6 +6,7 @@ import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";
 import { ClerkModule } from "./modules/clerk";
 import { StripeModule } from "./modules/stripe";
+import { inspect } from "@/lib/inspect";
 
 export class Container {
   private constructor() {}
@@ -17,8 +18,9 @@ export class Container {
 
   private prismaExtension = Prisma.defineExtension({
     query: {
-      user: {
-        async create({ query, args }) {
+      token: {
+        async createMany({ query, args }) {
+          // TODO: count the args by userId and update clerk with the new number
           return query(args);
         },
       },

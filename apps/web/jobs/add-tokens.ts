@@ -1,5 +1,5 @@
 import { Container } from "@/container";
-import { inspect } from "@/lib/inspect";
+import { numTokensPerMonth } from "@/lib/constants";
 
 export default async (cnt: Container) => {
   console.log("Creating tokens... ");
@@ -15,13 +15,15 @@ export default async (cnt: Container) => {
   });
 
   for (const user of users) {
-    let numTokensCreated = 0;
+    let numTokensToCreate = numTokensPerMonth - user._count.tokens;
+    if (numTokensPerMonth <= 0) continue;
 
-    for (let i = user._count.tokens; i < 5; i++) {
-      await cnt.prisma.token.create({ data: { userId: user.id } });
-      numTokensCreated++;
-    }
+    await cnt.prisma.token.createMany({
+      data: [...new Array(numTokensToCreate)].map(() => ({
+        userId: user.id,
+      })),
+    });
 
-    console.log(`${user.email} ${numTokensCreated} tokens created`);
+    console.log(`${user.email} ${numTokensToCreate} tokens created`);
   }
 };
