@@ -123,7 +123,8 @@ model Token {
 }
 
 model Message {
-  id String @id @default(cuid())
+  id   String @id @default(cuid())
+  body String
 
   fromUserId     String
   toUserId       String

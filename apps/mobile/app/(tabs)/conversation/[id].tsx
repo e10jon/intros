@@ -11,37 +11,24 @@ export default function Profile() {
   const [conversation, setConversation] = useState<
     RouteData["conversation"] | null
   >();
-  const [profile, setProfile] = useState<RouteData["profile"] | null>(null);
 
-  const fetchProfile = async () => {
-    setProfile(null);
-
-    const { profile, conversation } = await introsFetch(`/api/profiles/[id]`, {
+  const fetchConversation = async () => {
+    const { conversation } = await introsFetch(`/api/conversations/[id]`, {
       params: { id },
     });
 
-    setProfile(profile);
     setConversation(conversation);
   };
 
   useEffect(() => {
-    fetchProfile();
+    fetchConversation();
   }, [id]);
 
   const handleMessageButtonPress = async () => {};
 
   return (
     <View>
-      <Text>Profile {id}</Text>
-      <Text>Name: {profile?.name}</Text>
-      <Text>Title: {profile?.title}</Text>
-      <Text>Bio: {profile?.bio}</Text>
-
-      {conversation ? (
-        <Link href={`/inbox/${conversation.id}`}>Conversation</Link>
-      ) : (
-        <Button title="Start conversation" onPress={handleMessageButtonPress} />
-      )}
+      <Text>Convo</Text>
     </View>
   );
 }
