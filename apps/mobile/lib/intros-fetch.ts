@@ -3,7 +3,7 @@ import { getEnvCred } from "../get-env-cred";
 import { Body, Data, Path, Params } from "@intros/types";
 
 export const host = `https://${getEnvCred("introsApiHost")}`;
-export const urlScheme = "exp://"; // "intros://";
+export const urlScheme = "exp://"; // TODO: "intros://";
 
 export const introsFetch = async <P extends Path>(
   path: P,
