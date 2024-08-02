@@ -95,6 +95,13 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="sign-up-after"
+        options={{
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
         name="profile/[id]"
         options={{
           href: null,

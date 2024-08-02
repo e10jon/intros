@@ -41,7 +41,7 @@ export default function SignUp() {
 
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
-        router.replace("/");
+        router.replace("/sign-up-after");
       } else {
         console.error(JSON.stringify(completeSignUp, null, 2));
       }

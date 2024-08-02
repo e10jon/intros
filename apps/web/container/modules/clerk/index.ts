@@ -34,10 +34,12 @@ export class ClerkModule {
       update: data,
     });
 
-    await this.syncTokenIsAvailable({
+    await this.syncMetadata({
       prismaUserId: user.id,
       clerkUserId: user.clerkId,
       currentTokenIsAvailable: payload.data.public_metadata.tokenIsAvailable,
+      currentCreationIsComplete:
+        payload.data.public_metadata.creationIsComplete,
     });
 
     return user;
@@ -46,15 +48,20 @@ export class ClerkModule {
   captureUserCreatedEvent = this.upsertUser;
   captureUserUpdatedEvent = this.upsertUser;
 
-  async syncTokenIsAvailable({
+  async syncMetadata({
     prismaUserId,
     clerkUserId,
     currentTokenIsAvailable,
+    currentCreationIsComplete,
   }: {
     prismaUserId: string;
     clerkUserId: string;
     currentTokenIsAvailable?: boolean;
+    currentCreationIsComplete?: boolean;
   }) {
+    const publicMetadata: UserPublicMetadata = {};
+
+    // check for token availability
     const numAvailableTokens = await this.cnt.prisma.token.count({
       where: { userId: prismaUserId, conversationId: null },
     });
@@ -63,16 +70,22 @@ export class ClerkModule {
       (numAvailableTokens > 0 && !currentTokenIsAvailable) ||
       (numAvailableTokens <= 0 && currentTokenIsAvailable)
     ) {
-      const publicMetadata = { tokenIsAvailable: numAvailableTokens > 0 };
-      console.log(
-        `[clerk] updateUserMetadata ${clerkUserId} ${JSON.stringify(
-          publicMetadata
-        )} `
-      );
-      return await this.cnt.clerk.apiClient.users.updateUserMetadata(
-        clerkUserId,
-        { publicMetadata }
-      );
+      publicMetadata.tokenIsAvailable = numAvailableTokens > 0;
     }
+
+    // check for user creation
+    if (!currentCreationIsComplete) publicMetadata.creationIsComplete = true;
+
+    if (Object.keys(publicMetadata).length === 0) return;
+
+    console.log(
+      `[clerk] updateUserMetadata ${clerkUserId} ${JSON.stringify(
+        publicMetadata
+      )} `
+    );
+    return await this.cnt.clerk.apiClient.users.updateUserMetadata(
+      clerkUserId,
+      { publicMetadata }
+    );
   }
 }

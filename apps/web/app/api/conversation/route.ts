@@ -51,7 +51,7 @@ export async function POST(
         },
       },
     }),
-    cnt.clerk.syncTokenIsAvailable({
+    cnt.clerk.syncMetadata({
       prismaUserId: currentPrismaUser.id,
       clerkUserId: currentPrismaUser.clerkId,
     }),
