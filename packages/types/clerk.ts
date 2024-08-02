@@ -4,6 +4,7 @@ declare global {
   interface UserPublicMetadata {
     stripeSubscriptionId?: string;
     subscriptionIsActve?: boolean;
+    tokenIsAvailable?: boolean;
   }
 }
 

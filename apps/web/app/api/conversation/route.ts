@@ -6,6 +6,7 @@ export async function POST(
   request: Request
 ): Promise<NextResponse<Data<"/api/conversation", "POST">>> {
   const json = (await request.json()) as Body<"/api/conversation">;
+  console.log("[body]", json);
 
   const cnt = await Container.init();
   const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
@@ -19,30 +20,35 @@ export async function POST(
     return await tx.conversation.create({
       data: {
         fromUserId: currentPrismaUser.id,
-        toUserId: currentPrismaUser.id,
+        toUserId: json.toUserId,
         token: { connect: { id: token.id } },
       },
     });
   });
 
-  const messages = [
-    await cnt.prisma.message.create({
-      data: {
-        conversationId: conversation.id,
-        body: json.body,
-        fromUserId: currentPrismaUser.id,
-        toUserId: json.toUserId,
+  const [messages, profiles, _] = await Promise.all([
+    [
+      await cnt.prisma.message.create({
+        data: {
+          conversationId: conversation.id,
+          body: json.body,
+          fromUserId: conversation.fromUserId,
+          toUserId: conversation.toUserId,
+        },
+      }),
+    ],
+    cnt.prisma.profile.findMany({
+      where: {
+        id: {
+          in: [currentPrismaUser.id, json.toUserId],
+        },
       },
     }),
-  ];
-
-  const profiles = await cnt.prisma.profile.findMany({
-    where: {
-      id: {
-        in: [currentPrismaUser.id, json.toUserId],
-      },
-    },
-  });
+    cnt.clerk.syncTokenIsAvailable({
+      prismaUserId: currentPrismaUser.id,
+      clerkUserId: currentPrismaUser.clerkId,
+    }),
+  ]);
 
   return NextResponse.json({ conversation, messages, profiles });
 }

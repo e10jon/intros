@@ -80,7 +80,7 @@ model Conversation {
   userRejected User?     @relation("userRejected", fields: [rejectedByUserId], references: [id])
   token        Token?
 
-  @@index([fromUserId])
+  @@unique([fromUserId, toUserId])
   @@index([toUserId])
 }
 

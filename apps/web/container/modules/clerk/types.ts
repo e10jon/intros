@@ -75,7 +75,7 @@ export type WebhookPayload<
         primary_web3_wallet_id: string | null;
         private_metadata: {};
         profile_image_url: string;
-        public_metadata: {};
+        public_metadata: UserPublicMetadata;
         saml_accounts: [];
         totp_enabled: boolean;
         two_factor_enabled: boolean;

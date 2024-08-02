@@ -15,7 +15,7 @@ const paths = [
 type Paths = typeof paths;
 export type Path = Paths[number];
 
-type Method = "GET" | "POST";
+export type Method = "GET" | "POST";
 
 export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
   ? { hello: "there" }
@@ -39,7 +39,7 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
     : M extends "POST"
     ? SingleConversation
     : never
-  : P extends "/api/conversations/[id]"
+  : P extends "/api/conversations/[id]" | "/api/conversation"
   ? SingleConversation
   : unknown;
 

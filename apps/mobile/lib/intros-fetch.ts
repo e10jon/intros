@@ -1,15 +1,15 @@
 import { getClerkInstance } from "@clerk/clerk-expo";
 import { getEnvCred } from "../get-env-cred";
-import { Body, Data, Path, Params } from "@intros/types";
+import { Body, Data, Path, Params, Method } from "@intros/types";
 
 export const host = `https://${getEnvCred("introsApiHost")}`;
 export const urlScheme = "exp://"; // TODO: "intros://";
 
-export const introsFetch = async <P extends Path>(
+export const introsFetch = async <P extends Path, M extends Method = "GET">(
   path: P,
   opts?: {
-    method?: "POST";
-    body?: Body<P> extends never ? never : Body<P>;
+    method?: M;
+    body?: Body<P, M> extends never ? never : Body<P, M>;
     params?: Params<P> extends never ? never : Params<P>;
   }
 ) => {
@@ -39,5 +39,5 @@ export const introsFetch = async <P extends Path>(
     },
   });
 
-  return res.json() as Data<P>;
+  return res.json() as Data<P, M>;
 };
