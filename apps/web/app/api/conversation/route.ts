@@ -6,7 +6,6 @@ export async function POST(
   request: Request
 ): Promise<NextResponse<Data<"/api/conversation", "POST">>> {
   const json = (await request.json()) as Body<"/api/conversation">;
-  console.log("[body]", json);
 
   const cnt = await Container.init();
   const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
@@ -16,12 +15,6 @@ export async function POST(
       where: { conversationId: null, userId: currentPrismaUser.id },
     });
     if (!token) throw new Error("No tokens available");
-
-    console.log({
-      fromUserId: currentPrismaUser.id,
-      toUserId: json.toUserId,
-      token: { connect: { id: token.id } },
-    });
 
     return await tx.conversation.create({
       data: {
