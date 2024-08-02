@@ -1,6 +1,6 @@
 import { auth, User as ClerkUser, currentUser } from "@clerk/nextjs/server";
 import { Prisma, User } from "@prisma/client";
-import { prisma } from "../prisma";
+import { prisma } from "@/lib/prisma";
 import { Queue } from "bullmq";
 import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";

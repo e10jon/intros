@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { getEnvCred } from "@/get-env-cred";
+import { getEnvCred } from "@/lib/get-env-cred";
 import { Container } from "@/container";
 import { CreateSubscription } from "@intros/types";
 

@@ -1,5 +1,5 @@
-import { getEnvCred } from "@/get-env-cred";
-import { inspect } from "@/inspect";
+import { getEnvCred } from "@/lib/get-env-cred";
+import { inspect } from "@/lib/inspect";
 import { Container } from "@/container";
 
 const webhookSecret = getEnvCred("stripeWebhookSecret");

@@ -1,6 +1,6 @@
 import { Webhook } from "svix";
-import { getEnvCred } from "@/get-env-cred";
-import { inspect } from "@/inspect";
+import { getEnvCred } from "@/lib/get-env-cred";
+import { inspect } from "@/lib/inspect";
 import { WebhookPayload } from "@/container/modules/clerk/types";
 import { Container } from "@/container";
 
