@@ -11,15 +11,18 @@ export default function Profile() {
   >(null);
 
   const fetchProfile = async () => {
+    setProfile(null);
+
     const { profile } = await introsFetch(`/api/profiles/[id]`, {
       params: { id },
     });
+
     setProfile(profile);
   };
 
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [id]);
 
   return (
     <View>

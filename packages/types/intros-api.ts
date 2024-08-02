@@ -1,4 +1,4 @@
-import { Profile } from "@prisma/client";
+import { Conversation, Profile } from "@prisma/client";
 import Stripe from "stripe";
 
 const paths = [
@@ -7,6 +7,7 @@ const paths = [
   "/api/profile",
   "/api/profiles",
   "/api/profiles/[id]",
+  "/api/conversations",
 ] as const;
 
 type Paths = typeof paths;
@@ -22,6 +23,13 @@ export type Data<P extends Path> = P extends "/api"
   ? { profiles: Profile[] }
   : P extends "/api/profiles/[id]"
   ? { profile: Profile }
+  : P extends "/api/conversations"
+  ? {
+      conversations: (Conversation & {
+        userFrom: { profile: Profile | null } | null;
+        userTo: { profile: Profile | null } | null;
+      })[];
+    }
   : unknown;
 
 export type CreateSubscription = Stripe.Response<

@@ -82,6 +82,18 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="inbox"
+        options={{
+          title: "Inbox",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "file-tray" : "file-tray-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile/[id]"
         options={{
           href: null,
