@@ -9,7 +9,6 @@ export default function SignUpAfter() {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      console.log(user);
       if (!user) return;
 
       if (!user.publicMetadata.creationIsComplete) {

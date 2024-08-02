@@ -1,6 +1,7 @@
 import { introsFetch } from "@/lib/intros-fetch";
 import { SignedIn, SignedOut } from "@clerk/clerk-expo";
 import { Data } from "@intros/types";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
@@ -30,6 +31,7 @@ export default function Inbox() {
 
         {conversations?.map((conversation) => (
           <View key={conversation.id}>
+            <Link href={`/conversation/${conversation.id}`}>Link</Link>
             <Text>From: {conversation.userFrom?.profile?.name}</Text>
             <Text>To: {conversation.userTo?.profile?.name}</Text>
           </View>
