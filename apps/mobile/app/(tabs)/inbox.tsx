@@ -5,13 +5,17 @@ import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
 export default function Inbox() {
+  const [numTokensAvailable, setNumTokensAvailable] = useState<number | null>();
   const [conversations, setConversations] = useState<
     Data<"/api/conversations">["conversations"] | null
   >(null);
 
   const fetchConversations = async () => {
-    const { conversations } = await introsFetch(`/api/conversations`);
+    const { conversations, numTokensAvailable } = await introsFetch(
+      `/api/conversations`
+    );
     setConversations(conversations);
+    setNumTokensAvailable(numTokensAvailable);
   };
 
   useEffect(() => {
@@ -22,6 +26,8 @@ export default function Inbox() {
     <View>
       <SignedIn>
         <Text>Inbox</Text>
+        <Text>Num tokens available: {numTokensAvailable}</Text>
+
         {conversations?.map((conversation) => (
           <View key={conversation.id}>
             <Text>From: {conversation.userFrom?.profile?.name}</Text>

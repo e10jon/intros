@@ -29,6 +29,7 @@ export type Data<P extends Path> = P extends "/api"
         userFrom: { profile: Profile | null } | null;
         userTo: { profile: Profile | null } | null;
       })[];
+      numTokensAvailable: number;
     }
   : unknown;
 

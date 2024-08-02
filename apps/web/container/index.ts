@@ -6,7 +6,6 @@ import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";
 import { ClerkModule } from "./modules/clerk";
 import { StripeModule } from "./modules/stripe";
-import { inspect } from "@/lib/inspect";
 
 export class Container {
   private constructor() {}
@@ -20,8 +19,21 @@ export class Container {
     query: {
       token: {
         async createMany({ query, args }) {
+          const res = await query(args);
+
           // TODO: count the args by userId and update clerk with the new number
-          return query(args);
+          const userIds = Array.isArray(args.data)
+            ? args.data.map((d) => d.userId)
+            : [args.data.userId];
+          const userIdsGroup = userIds.reduce<{ [userId: string]: number }>(
+            (obj, userId) => {
+              obj[userId] = (obj[userId] || 0) + 1;
+              return obj;
+            },
+            {}
+          );
+
+          return res;
         },
       },
     },
@@ -92,6 +104,4 @@ export class Container {
 
   stripe = new StripeModule(this);
   clerk = new ClerkModule(this);
-
-  helloWorld = () => ({ hello: "world" });
 }
