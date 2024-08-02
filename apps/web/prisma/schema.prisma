@@ -7,12 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ReviewStrategy {
+enum ReportStrategy {
   Human
   AI
 }
 
-enum ReviewStatus {
+enum ReportStatus {
   Pending
   Completed
 }
@@ -34,28 +34,14 @@ model User {
   updatedAt DateTime @updatedAt
 
   profile               Profile?
-  messagesSent          Message[]            @relation("userFrom")
-  messagesReceived      Message[]            @relation("userTo")
-  conversationsStarted  Conversation[]       @relation("userFrom")
-  conversationsJoined   Conversation[]       @relation("userTo")
-  conversationTokens    ConversationToken[]
-  reports               ConversationReport[]
-  reviews               Review[]
-  conversationsRejected Conversation[]       @relation("userRejected")
-}
-
-model Review {
-  id       String         @id @default(cuid())
-  strategy ReviewStrategy
-  status   ReviewStatus   @default(Pending)
-  notes    String?
-
-  userId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
+  messagesSent          Message[]      @relation("userFrom")
+  messagesReceived      Message[]      @relation("userTo")
+  conversationsStarted  Conversation[] @relation("userFrom")
+  conversationsJoined   Conversation[] @relation("userTo")
+  conversationsRejected Conversation[] @relation("userRejected")
+  tokens                Token[]
+  reportsAsSuspect      Report[]       @relation("reportsAsSuspect")
+  reportsAsReporter     Report[]       @relation("reportsAsReporter")
 }
 
 model Profile {
@@ -71,6 +57,8 @@ model Profile {
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model Conversation {
@@ -87,27 +75,38 @@ model Conversation {
   updatedAt DateTime @updatedAt
 
   messages     Message[]
-  userFrom     User                 @relation("userFrom", fields: [fromUserId], references: [id])
-  userTo       User                 @relation("userTo", fields: [toUserId], references: [id])
-  userRejected User?                @relation("userRejected", fields: [rejectedByUserId], references: [id])
-  token        ConversationToken?
-  reports      ConversationReport[]
+  userFrom     User      @relation("userFrom", fields: [fromUserId], references: [id])
+  userTo       User      @relation("userTo", fields: [toUserId], references: [id])
+  userRejected User?     @relation("userRejected", fields: [rejectedByUserId], references: [id])
+  token        Token?
+
+  @@index([fromUserId])
+  @@index([toUserId])
 }
 
-model ConversationReport {
-  id String @id @default(cuid())
+model Report {
+  id       String         @id @default(cuid())
+  status   ReportStatus   @default(Pending)
+  strategy ReportStrategy
+  notes    String?
 
-  conversationId String
-  userId         String
+  suspectId  String
+  reporterId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  conversation Conversation @relation(fields: [conversationId], references: [id])
-  user         User         @relation(fields: [userId], references: [id])
+  reporter User @relation("reportsAsReporter", fields: [reporterId], references: [id])
+  suspect  User @relation("reportsAsSuspect", fields: [suspectId], references: [id])
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([suspectId])
+  @@index([reporterId])
 }
 
-model ConversationToken {
+model Token {
   id String @id @default(cuid())
 
   conversationId String? @unique
@@ -118,6 +117,9 @@ model ConversationToken {
 
   user         User          @relation(fields: [userId], references: [id])
   conversation Conversation? @relation(fields: [conversationId], references: [id])
+
+  @@index([userId])
+  @@index([conversationId])
 }
 
 model Message {
@@ -133,4 +135,6 @@ model Message {
   conversation Conversation @relation(fields: [conversationId], references: [id])
   userFrom     User         @relation("userFrom", fields: [fromUserId], references: [id])
   userTo       User         @relation("userTo", fields: [toUserId], references: [id])
+
+  @@index([conversationId])
 }

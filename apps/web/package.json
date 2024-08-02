@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check-types": "tsc --noEmit -w"
+    "check-types": "tsc --noEmit -w",
+    "job": "tsx -r dotenv/config jobs/_runner.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.2.8",

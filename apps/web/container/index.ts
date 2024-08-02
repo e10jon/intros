@@ -12,7 +12,6 @@ export class Container {
 
   static async init() {
     const cnt = new Container();
-    cnt.currentAuth = auth();
     return cnt;
   }
 
@@ -26,11 +25,17 @@ export class Container {
     },
   });
 
-  /** The currently auth'd object. */
-  currentAuth?: ReturnType<typeof auth>;
-
+  private _currentAuth?: ReturnType<typeof auth>;
   private _currentClerkUser?: Promise<ClerkUser | null>;
   protected _currentPrismaUser?: Promise<User | null>;
+
+  /** The currently auth'd object. */
+  get currentAuth() {
+    if (typeof this._currentAuth === "undefined") {
+      this._currentAuth = auth();
+    }
+    return this._currentAuth;
+  }
 
   /** A promise that returns the authenticated user. */
   get currentClerkUser() {
