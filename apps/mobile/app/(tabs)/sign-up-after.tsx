@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Text } from "react-native";
 
 export default function SignUpAfter() {
@@ -8,15 +8,22 @@ export default function SignUpAfter() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) return;
+    const interval = setInterval(async () => {
+      console.log(user);
+      if (!user) return;
 
-    if (!user.publicMetadata.creationIsComplete) {
-      user.reload();
-      return;
-    }
+      if (!user.publicMetadata.creationIsComplete) {
+        user.reload();
+        return;
+      }
 
-    router.replace("/");
-  }, [user]);
+      router.replace("/");
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return <Text>Please wait...</Text>;
 }
