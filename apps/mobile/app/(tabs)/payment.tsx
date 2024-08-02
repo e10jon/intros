@@ -1,3 +1,4 @@
+import StripeProvider from "@/components/StripeProvider";
 import { introsFetch, urlScheme } from "@/lib/intros-fetch";
 import { useUser } from "@clerk/clerk-expo";
 import { useStripe } from "@stripe/stripe-react-native";
@@ -40,7 +41,7 @@ export default function Payment() {
   };
 
   return (
-    <View>
+    <StripeProvider>
       {(() => {
         if (!isLoaded) return <Text>Loading...</Text>;
         if (!user) return <Text>Need to log in</Text>;
@@ -49,6 +50,6 @@ export default function Payment() {
 
         return <Button onPress={openPaymentSheet} title="Payment" />;
       })()}
-    </View>
+    </StripeProvider>
   );
 }

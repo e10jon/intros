@@ -3,9 +3,10 @@ import { useEffect } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 import { Formik, useFormikContext } from "formik";
 import { Body } from "@intros/types";
-import { SignedIn, SignedOut } from "@clerk/clerk-expo";
+import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 
 const FetchProfile = () => {
+  const { user } = useUser();
   const { setFieldValue } = useFormikContext<Body<"/api/profile">>();
 
   useEffect(() => {
@@ -14,25 +15,26 @@ const FetchProfile = () => {
       setFieldValue("title", profile.title || "");
       setFieldValue("bio", profile.bio || "");
     });
-  }, []);
+  }, [user]);
 
   return null;
 };
 
 export default function EditProfile() {
+  const updateBio = async (values: Body<"/api/profile">) => {
+    await introsFetch("/api/profile", {
+      method: "POST",
+      body: values,
+    });
+  };
+
   return (
     <View>
       <SignedIn>
         <Text>Edit Profile</Text>
         <Formik<Body<"/api/profile">>
           initialValues={{ name: "", title: "", bio: "" }}
-          onSubmit={async (values) => {
-            console.log(values);
-            await introsFetch("/api/profile", {
-              method: "POST",
-              body: values,
-            });
-          }}
+          onSubmit={updateBio}
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (
             <>

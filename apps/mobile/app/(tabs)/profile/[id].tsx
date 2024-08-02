@@ -20,11 +20,16 @@ export default function Profile() {
   const [profile, setProfile] = useState<RouteData["profile"] | null>(null);
 
   const fetchProfile = async () => {
+    setIsComposingMessage(false);
+    setMessageBody("");
+    setConversation(null);
     setProfile(null);
 
     const { profile, conversation } = await introsFetch(`/api/profiles/[id]`, {
       params: { id },
     });
+
+    console.log(conversation);
 
     setProfile(profile);
     setConversation(conversation);
@@ -44,8 +49,10 @@ export default function Profile() {
   };
 
   const handleSendMessagePress = async () => {
+    if (!profile) return;
+
     const { conversation } = await introsFetch("/api/conversation", {
-      body: { toUserId: id, body: messageBody },
+      body: { toUserId: profile.userId, body: messageBody },
       method: "POST",
     });
 

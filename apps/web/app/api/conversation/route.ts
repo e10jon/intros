@@ -17,6 +17,12 @@ export async function POST(
     });
     if (!token) throw new Error("No tokens available");
 
+    console.log({
+      fromUserId: currentPrismaUser.id,
+      toUserId: json.toUserId,
+      token: { connect: { id: token.id } },
+    });
+
     return await tx.conversation.create({
       data: {
         fromUserId: currentPrismaUser.id,
