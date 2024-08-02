@@ -1,14 +1,24 @@
 import { introsFetch } from "@/lib/intros-fetch";
 import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 import { useEffect, useState } from "react";
-import { Button, RefreshControl, ScrollView, Text } from "react-native";
+import {
+  Button,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import { Data } from "@intros/types";
+import { Link } from "expo-router";
 
 export default function Home() {
   const { user } = useUser();
   const { signOut } = useAuth();
-  const [users, setUsers] = useState<Data<"/api">["users"] | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [profiles, setProfiles] = useState<
+    Data<"/api/profiles">["profiles"] | null
+  >(null);
+  const [refreshing, setRefreshing] = useState(true);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -16,8 +26,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!refreshing) return;
-    introsFetch("/api").then((data) => {
-      setUsers(data.users);
+    introsFetch("/api/profiles").then((data) => {
+      setProfiles(data.profiles);
       setRefreshing(false);
     });
   }, [refreshing]);
@@ -43,7 +53,21 @@ export default function Home() {
         <Text>You are not signed in.</Text>
       </SignedOut>
 
-      {users && <Text>Users: {JSON.stringify(users)}</Text>}
+      {profiles && (
+        <View>
+          <Text>Profiles</Text>
+          {profiles.map((profile) => (
+            <View key={profile.id}>
+              <Link href={`/profile/${profile.id}`} asChild>
+                <Pressable>
+                  <Text>{profile.name}</Text>
+                  <Text>{profile.title}</Text>
+                </Pressable>
+              </Link>
+            </View>
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 }

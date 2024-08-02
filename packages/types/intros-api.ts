@@ -1,16 +1,26 @@
-import { User, Profile } from "@prisma/client";
+import { Profile } from "@prisma/client";
 import Stripe from "stripe";
 
-const paths = ["/api", "/api/payment/subscription", "/api/profile"] as const;
+const paths = [
+  "/api",
+  "/api/payment/subscription",
+  "/api/profile",
+  "/api/profiles",
+  "/api/profiles/[id]",
+] as const;
 
 type Paths = typeof paths;
 export type Path = Paths[number];
 
 export type Data<P extends Path> = P extends "/api"
-  ? { users: User[] }
+  ? { hello: "there" }
   : P extends "/api/payment/subscription"
   ? CreateSubscription
   : P extends "/api/profile"
+  ? { profile: Profile }
+  : P extends "/api/profiles"
+  ? { profiles: Profile[] }
+  : P extends "/api/profiles/[id]"
   ? { profile: Profile }
   : unknown;
 
@@ -29,4 +39,8 @@ export type Body<P extends Path> = P extends "/api/profile"
       bio?: string;
       title?: string;
     }
+  : never;
+
+export type Params<P extends Path> = P extends "/api/profiles/[id]"
+  ? { id: string }
   : never;
