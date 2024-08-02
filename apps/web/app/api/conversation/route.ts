@@ -41,6 +41,14 @@ export async function POST(
           fromUserId: conversation.fromUserId,
           toUserId: conversation.toUserId,
         },
+        select: {
+          id: true,
+          body: true,
+          createdAt: true,
+          updatedAt: true,
+          userFrom: { select: { profile: { select: { id: true } } } },
+          userTo: { select: { profile: { select: { id: true } } } },
+        },
       }),
     ],
     cnt.prisma.profile.findMany({

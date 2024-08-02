@@ -29,8 +29,6 @@ export default function Profile() {
       params: { id },
     });
 
-    console.log(conversation);
-
     setProfile(profile);
     setConversation(conversation);
   };
