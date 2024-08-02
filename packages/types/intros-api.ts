@@ -9,12 +9,15 @@ const paths = [
   "/api/profiles/[id]",
   "/api/conversations",
   "/api/conversations/[id]",
+  "/api/conversation",
 ] as const;
 
 type Paths = typeof paths;
 export type Path = Paths[number];
 
-export type Data<P extends Path> = P extends "/api"
+type Method = "GET" | "POST";
+
+export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
   ? { hello: "there" }
   : P extends "/api/payment/subscription"
   ? CreateSubscription
@@ -25,23 +28,29 @@ export type Data<P extends Path> = P extends "/api"
   : P extends "/api/profiles/[id]"
   ? { profile: Profile; conversation: Conversation | null }
   : P extends "/api/conversations"
-  ? {
-      conversations: (Conversation & {
-        userFrom: { profile: Profile | null } | null;
-        userTo: { profile: Profile | null } | null;
-      })[];
-      numTokensAvailable: number;
-    }
+  ? M extends "GET"
+    ? {
+        conversations: (Conversation & {
+          userFrom: { profile: Profile | null } | null;
+          userTo: { profile: Profile | null } | null;
+        })[];
+        numTokensAvailable: number;
+      }
+    : M extends "POST"
+    ? SingleConversation
+    : never
   : P extends "/api/conversations/[id]"
-  ? {
-      conversation: Conversation;
-      messages: (Pick<Message, "id" | "body" | "createdAt" | "updatedAt"> & {
-        userFrom: { profile: { id: string } | null } | null;
-        userTo: { profile: { id: string } | null } | null;
-      })[];
-      profiles: Profile[];
-    }
+  ? SingleConversation
   : unknown;
+
+type SingleConversation = {
+  conversation: Conversation;
+  messages: (Pick<Message, "id" | "body" | "createdAt" | "updatedAt"> & {
+    userFrom: { profile: { id: string } | null } | null;
+    userTo: { profile: { id: string } | null } | null;
+  })[];
+  profiles: Profile[];
+};
 
 export type CreateSubscription = Stripe.Response<
   Stripe.Subscription & {
@@ -52,11 +61,19 @@ export type CreateSubscription = Stripe.Response<
   }
 >;
 
-export type Body<P extends Path> = P extends "/api/profile"
+export type Body<
+  P extends Path,
+  M extends Method = "POST"
+> = P extends "/api/profile"
   ? {
       name?: string;
       bio?: string;
       title?: string;
+    }
+  : P extends "/api/conversation"
+  ? {
+      toUserId: string;
+      body: string;
     }
   : never;
 

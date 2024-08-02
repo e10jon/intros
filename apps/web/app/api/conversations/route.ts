@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
-import { Data } from "@intros/types";
+import { Data, Body } from "@intros/types";
 
 export async function GET(): Promise<NextResponse<Data<"/api/conversations">>> {
   const cnt = await Container.init();

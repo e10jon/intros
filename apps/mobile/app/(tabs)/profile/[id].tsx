@@ -1,5 +1,5 @@
 import { Button, Text, View } from "react-native";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { introsFetch } from "@/lib/intros-fetch";
 import { Data } from "@intros/types";
@@ -7,6 +7,7 @@ import { Data } from "@intros/types";
 type RouteData = Data<"/api/profiles/[id]">;
 
 export default function Profile() {
+  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [conversation, setConversation] = useState<
     RouteData["conversation"] | null
@@ -28,7 +29,10 @@ export default function Profile() {
     fetchProfile();
   }, [id]);
 
-  const handleMessageButtonPress = async () => {};
+  const handleMessageButtonPress = async () => {
+    // create a new conversation
+    // navigate to it
+  };
 
   return (
     <View>
@@ -38,7 +42,7 @@ export default function Profile() {
       <Text>Bio: {profile?.bio}</Text>
 
       {conversation ? (
-        <Link href={`/inbox/${conversation.id}`}>Conversation</Link>
+        <Link href={`/conversation/${conversation.id}`}>Conversation</Link>
       ) : (
         <Button title="Start conversation" onPress={handleMessageButtonPress} />
       )}
