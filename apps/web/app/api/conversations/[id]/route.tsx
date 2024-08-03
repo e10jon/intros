@@ -24,7 +24,7 @@ export async function GET(
     }),
     cnt.prisma.message.findMany({
       where: { conversationId: params.id },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "asc" },
       select: selectArgsForMessage,
     }),
   ]);
@@ -40,9 +40,7 @@ export async function GET(
   );
   const profiles = await cnt.prisma.profile.findMany({
     where: {
-      userId: {
-        in: profileIdsInConversation,
-      },
+      id: { in: profileIdsInConversation },
     },
   });
 
