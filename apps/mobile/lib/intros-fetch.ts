@@ -18,7 +18,7 @@ export const introsFetch = async <P extends Path, M extends Method = "GET">(
 
   const pathAfterParams = (() => {
     if (!opts?.params) return path;
-    return path.replace(/\[([^\]]+)\]/g, (_, key: keyof Params<P>) => {
+    return path.replaceAll(/\[(.+?)\]/g, (_, key: keyof Params<P>) => {
       const val = opts.params?.[key];
       return typeof val === "string" ? val : "";
     });

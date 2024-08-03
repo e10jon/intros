@@ -31,16 +31,14 @@ export async function POST(
         data: {
           conversationId: conversation.id,
           body: json.body,
-          fromUserId: conversation.fromUserId,
-          toUserId: conversation.toUserId,
+          userId: currentPrismaUser.id,
         },
         select: {
           id: true,
           body: true,
           createdAt: true,
           updatedAt: true,
-          userFrom: { select: { profile: { select: { id: true } } } },
-          userTo: { select: { profile: { select: { id: true } } } },
+          user: { select: { profile: { select: { id: true } } } },
         },
       }),
     ],

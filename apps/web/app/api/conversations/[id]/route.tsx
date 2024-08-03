@@ -29,8 +29,7 @@ export async function GET(
         body: true,
         createdAt: true,
         updatedAt: true,
-        userFrom: { select: { profile: { select: { id: true } } } },
-        userTo: { select: { profile: { select: { id: true } } } },
+        user: { select: { profile: { select: { id: true } } } },
       },
     }),
   ]);
@@ -38,12 +37,10 @@ export async function GET(
   // fetch the profiles of the users in the conversation
   const profileIdsInConversation = Array.from(
     new Set(
-      messages.flatMap((m) => {
-        const profileIds = [];
-        if (m.userFrom.profile?.id) profileIds.push(m.userFrom.profile.id);
-        if (m.userTo.profile?.id) profileIds.push(m.userTo.profile.id);
-        return profileIds;
-      })
+      messages.reduce<string[]>((arr, m) => {
+        if (m.user.profile) return arr.concat(m.user.profile.id);
+        return arr;
+      }, [])
     )
   );
   const profiles = await cnt.prisma.profile.findMany({

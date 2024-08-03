@@ -1,4 +1,4 @@
-import { Button, Text, View } from "react-native";
+import { Button, Text, TextInput, View } from "react-native";
 import { Link, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { introsFetch } from "@/lib/intros-fetch";
@@ -7,8 +7,10 @@ import Message from "@/components/Message";
 
 type RouteData = Data<"/api/profiles/[id]">;
 
-export default function Profile() {
+export default function Conversation() {
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  const [newBody, setNewBody] = useState("");
   const [conversation, setConversation] = useState<
     RouteData["conversation"] | null
   >();
@@ -32,12 +34,23 @@ export default function Profile() {
     fetchConversation();
   }, [id]);
 
-  const handleMessageButtonPress = async () => {};
+  const handleSendMessagePress = async () => {
+    const { message } = await introsFetch(`/api/conversations/[id]/message`, {
+      method: "POST",
+      body: { body: newBody },
+      params: { id },
+    });
+
+    setNewBody("");
+    setMessages((prev) => (prev ? [...prev, message] : [message]));
+  };
 
   return (
     <View>
       <Text>Convo</Text>
       {messages && messages.map((m) => <Message key={m.id} message={m} />)}
+      <TextInput value={newBody} onChangeText={setNewBody} />
+      <Button title="Send" onPress={handleSendMessagePress} />
     </View>
   );
 }

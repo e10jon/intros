@@ -1,4 +1,8 @@
-import { Conversation, Message, Profile } from "@prisma/client";
+import {
+  Conversation,
+  Message as PrismaMessage,
+  Profile,
+} from "@prisma/client";
 import Stripe from "stripe";
 
 const paths = [
@@ -9,6 +13,7 @@ const paths = [
   "/api/profiles/[id]",
   "/api/conversations",
   "/api/conversations/[id]",
+  "/api/conversations/[id]/message",
   "/api/conversation",
 ] as const;
 
@@ -41,14 +46,20 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
     : never
   : P extends "/api/conversations/[id]" | "/api/conversation"
   ? SingleConversation
+  : P extends "/api/conversations/[id]/message"
+  ? { message: Message }
   : unknown;
+
+export type Message = Pick<
+  PrismaMessage,
+  "id" | "body" | "createdAt" | "updatedAt"
+> & {
+  user: { profile: { id: string } | null } | null;
+};
 
 type SingleConversation = {
   conversation: Conversation;
-  messages: (Pick<Message, "id" | "body" | "createdAt" | "updatedAt"> & {
-    userFrom: { profile: { id: string } | null } | null;
-    userTo: { profile: { id: string } | null } | null;
-  })[];
+  messages: Message[];
   profiles: Profile[];
 };
 
@@ -75,10 +86,15 @@ export type Body<
       toUserId: string;
       body: string;
     }
+  : P extends "/api/conversations/[id]/message"
+  ? {
+      body: string;
+    }
   : never;
 
 export type Params<P extends Path> = P extends
   | "/api/profiles/[id]"
   | "/api/conversations/[id]"
+  | "/api/conversations/[id]/message"
   ? { id: string }
   : never;

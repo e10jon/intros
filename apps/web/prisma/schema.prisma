@@ -34,11 +34,10 @@ model User {
   updatedAt DateTime @updatedAt
 
   profile               Profile?
-  messagesSent          Message[]      @relation("userFrom")
-  messagesReceived      Message[]      @relation("userTo")
   conversationsStarted  Conversation[] @relation("userFrom")
   conversationsJoined   Conversation[] @relation("userTo")
   conversationsRejected Conversation[] @relation("userRejected")
+  messages              Message[]
   tokens                Token[]
   reportsAsSuspect      Report[]       @relation("reportsAsSuspect")
   reportsAsReporter     Report[]       @relation("reportsAsReporter")
@@ -126,16 +125,14 @@ model Message {
   id   String @id @default(cuid())
   body String
 
-  fromUserId     String
-  toUserId       String
+  userId         String
   conversationId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   conversation Conversation @relation(fields: [conversationId], references: [id])
-  userFrom     User         @relation("userFrom", fields: [fromUserId], references: [id])
-  userTo       User         @relation("userTo", fields: [toUserId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
 
   @@index([conversationId])
 }
