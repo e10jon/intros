@@ -42,7 +42,7 @@ export type WebhookPayload<
           };
         }[];
         external_accounts: [];
-        external_id?: string;
+        external_id: string | null;
         first_name: string | null;
         has_image: boolean;
         id: string;

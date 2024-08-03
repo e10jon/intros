@@ -39,8 +39,9 @@ export class ClerkModule {
     await this.syncWithClerk({
       prismaUser,
       clerkUser: {
+        // convert the payload data to the clerk user
         id: clerkId,
-        externalId: prismaUser.id,
+        externalId: payload.data.external_id,
         publicMetadata: payload.data.public_metadata,
       },
     });
@@ -98,7 +99,10 @@ export class ClerkModule {
       console.log(
         `[clerk] updateUser ${clerkUser.id} ${JSON.stringify(args)} `
       );
-      await this.cnt.clerk.apiClient.users.updateUser(clerkUser.id, args);
+      return await this.cnt.clerk.apiClient.users.updateUser(
+        clerkUser.id,
+        args
+      );
     })();
 
     return await Promise.all([metaDataPromise, updateUserPromise]);
