@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
 import { Data } from "@intros/types";
+import { selectArgsForMessage } from "@/lib/prisma";
 
 export async function GET(
   request: Request,
@@ -24,13 +25,7 @@ export async function GET(
     cnt.prisma.message.findMany({
       where: { conversationId: params.id },
       orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        body: true,
-        createdAt: true,
-        updatedAt: true,
-        user: { select: { profile: { select: { id: true } } } },
-      },
+      select: selectArgsForMessage,
     }),
   ]);
 

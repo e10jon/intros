@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
 import { Body, Data } from "@intros/types";
+import { selectArgsForMessage } from "@/lib/prisma";
 
 export async function POST(
   request: Request,
@@ -18,13 +19,7 @@ export async function POST(
       body: json.body,
       userId: currentPrismaUser.id,
     },
-    select: {
-      id: true,
-      body: true,
-      createdAt: true,
-      updatedAt: true,
-      user: { select: { profile: { select: { id: true } } } },
-    },
+    select: selectArgsForMessage,
   });
 
   return NextResponse.json({ message });

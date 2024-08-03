@@ -52,7 +52,7 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
 
 export type Message = Pick<
   PrismaMessage,
-  "id" | "body" | "createdAt" | "updatedAt"
+  "id" | "body" | "createdAt" | "updatedAt" | "userId"
 > & {
   user: { profile: { id: string } | null } | null;
 };

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
 import { Body, Data } from "@intros/types";
+import { selectArgsForMessage } from "@/lib/prisma";
 
 export async function POST(
   request: Request
@@ -8,17 +9,18 @@ export async function POST(
   const json = (await request.json()) as Body<"/api/conversation">;
 
   const cnt = await Container.init();
-  const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
+  const clerkUser = await cnt.getCurrentClerkUserOrThrow();
+  const prismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
   const conversation = await cnt.prisma.$transaction(async (tx) => {
     const token = await cnt.prisma.token.findFirst({
-      where: { conversationId: null, userId: currentPrismaUser.id },
+      where: { conversationId: null, userId: prismaUser.id },
     });
     if (!token) throw new Error("No tokens available");
 
     return await tx.conversation.create({
       data: {
-        fromUserId: currentPrismaUser.id,
+        fromUserId: prismaUser.id,
         toUserId: json.toUserId,
         token: { connect: { id: token.id } },
       },
@@ -31,27 +33,21 @@ export async function POST(
         data: {
           conversationId: conversation.id,
           body: json.body,
-          userId: currentPrismaUser.id,
+          userId: prismaUser.id,
         },
-        select: {
-          id: true,
-          body: true,
-          createdAt: true,
-          updatedAt: true,
-          user: { select: { profile: { select: { id: true } } } },
-        },
+        select: selectArgsForMessage,
       }),
     ],
     cnt.prisma.profile.findMany({
       where: {
         id: {
-          in: [currentPrismaUser.id, json.toUserId],
+          in: [prismaUser.id, json.toUserId],
         },
       },
     }),
-    cnt.clerk.syncMetadata({
-      prismaUserId: currentPrismaUser.id,
-      clerkUserId: currentPrismaUser.clerkId,
+    cnt.clerk.syncWithClerk({
+      prismaUser,
+      clerkUser,
     }),
   ]);
 

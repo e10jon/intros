@@ -1,7 +1,9 @@
+import { auth, User as ClerkUser, currentUser } from "@clerk/nextjs/server";
 import { WebhookPayload } from "@/container/modules/clerk/types";
 import { Container } from "../..";
 import { clerkClient } from "@clerk/nextjs/server";
 import { numTokensPerMonth } from "@/lib/constants";
+import { User } from "@prisma/client";
 
 export class ClerkModule {
   constructor(private cnt: Container) {}
@@ -19,7 +21,7 @@ export class ClerkModule {
     const data = { email, phone: phoneNumber?.phone_number };
 
     // create or update the database user
-    const user = await this.cnt.prisma.user.upsert({
+    const prismaUser = await this.cnt.prisma.user.upsert({
       where: { clerkId },
       create: {
         ...data,
@@ -34,58 +36,71 @@ export class ClerkModule {
       update: data,
     });
 
-    await this.syncMetadata({
-      prismaUserId: user.id,
-      clerkUserId: user.clerkId,
-      currentTokenIsAvailable: payload.data.public_metadata.tokenIsAvailable,
-      currentCreationIsComplete:
-        payload.data.public_metadata.creationIsComplete,
+    await this.syncWithClerk({
+      prismaUser,
+      clerkUser: {
+        id: clerkId,
+        externalId: prismaUser.id,
+        publicMetadata: payload.data.public_metadata,
+      },
     });
 
-    return user;
+    return prismaUser;
   };
 
   captureUserCreatedEvent = this.upsertUser;
   captureUserUpdatedEvent = this.upsertUser;
 
-  async syncMetadata({
-    prismaUserId,
-    clerkUserId,
-    currentTokenIsAvailable,
-    currentCreationIsComplete,
+  async syncWithClerk({
+    prismaUser,
+    clerkUser,
   }: {
-    prismaUserId: string;
-    clerkUserId: string;
-    currentTokenIsAvailable?: boolean;
-    currentCreationIsComplete?: boolean;
+    prismaUser: User;
+    clerkUser: Pick<ClerkUser, "id" | "externalId" | "publicMetadata">;
   }) {
-    const publicMetadata: UserPublicMetadata = {};
+    const metaDataPromise = (async () => {
+      const publicMetadata: UserPublicMetadata = {};
 
-    // check for token availability
-    const numAvailableTokens = await this.cnt.prisma.token.count({
-      where: { userId: prismaUserId, conversationId: null },
-    });
+      // check for token availability
+      const numAvailableTokens = await this.cnt.prisma.token.count({
+        where: { userId: prismaUser.id, conversationId: null },
+      });
 
-    if (
-      (numAvailableTokens > 0 && !currentTokenIsAvailable) ||
-      (numAvailableTokens <= 0 && currentTokenIsAvailable)
-    ) {
-      publicMetadata.tokenIsAvailable = numAvailableTokens > 0;
-    }
+      if (
+        (numAvailableTokens > 0 &&
+          !clerkUser.publicMetadata.tokenIsAvailable) ||
+        (numAvailableTokens <= 0 && clerkUser.publicMetadata.tokenIsAvailable)
+      ) {
+        publicMetadata.tokenIsAvailable = numAvailableTokens > 0;
+      }
 
-    // check for user creation
-    if (!currentCreationIsComplete) publicMetadata.creationIsComplete = true;
+      // check for user creation
+      if (!clerkUser.publicMetadata.creationIsComplete)
+        publicMetadata.creationIsComplete = true;
 
-    if (Object.keys(publicMetadata).length === 0) return;
+      if (Object.keys(publicMetadata).length === 0) return;
 
-    console.log(
-      `[clerk] updateUserMetadata ${clerkUserId} ${JSON.stringify(
-        publicMetadata
-      )} `
-    );
-    return await this.cnt.clerk.apiClient.users.updateUserMetadata(
-      clerkUserId,
-      { publicMetadata }
-    );
+      console.log(
+        `[clerk] updateUserMetadata ${clerkUser.id} ${JSON.stringify(
+          publicMetadata
+        )} `
+      );
+      return await this.cnt.clerk.apiClient.users.updateUserMetadata(
+        clerkUser.id,
+        { publicMetadata }
+      );
+    })();
+
+    const updateUserPromise = (async () => {
+      if (clerkUser.externalId === prismaUser.id) return;
+
+      const args = { externalId: prismaUser.id };
+      console.log(
+        `[clerk] updateUser ${clerkUser.id} ${JSON.stringify(args)} `
+      );
+      await this.cnt.clerk.apiClient.users.updateUser(clerkUser.id, args);
+    })();
+
+    return await Promise.all([metaDataPromise, updateUserPromise]);
   }
 }
