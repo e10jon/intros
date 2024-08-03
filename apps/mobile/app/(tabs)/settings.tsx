@@ -9,7 +9,7 @@ export default function Settings() {
   return (
     <View>
       <SignedIn>
-        <Text>You are already signed in.</Text>
+        <Text>Notification settings</Text>
       </SignedIn>
 
       <SignedOut>

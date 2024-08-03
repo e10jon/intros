@@ -44,11 +44,15 @@ model User {
 }
 
 model Profile {
-  id    String  @id @default(cuid())
-  name  String?
-  photo String?
-  title String?
-  bio   String?
+  id           String   @id @default(cuid())
+  name         String?
+  photo        String?
+  title        String?
+  bio          String?
+  interests    String[]
+  country      String?
+  province     String?
+  responseRate Float?
 
   userId String @unique
 

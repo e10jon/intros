@@ -14,6 +14,8 @@ const FetchProfile = () => {
       setFieldValue("name", profile.name || "");
       setFieldValue("title", profile.title || "");
       setFieldValue("bio", profile.bio || "");
+      setFieldValue("province", profile.province || "");
+      setFieldValue("country", profile.country || "");
     });
   }, [user]);
 
@@ -60,6 +62,13 @@ export default function EditProfile() {
                   onBlur={handleBlur("bio")}
                   value={values.bio}
                   multiline
+                />
+
+                <Text>Country</Text>
+                <TextInput
+                  onChangeText={handleChange("country")}
+                  onBlur={handleBlur("country")}
+                  value={values.country}
                 />
 
                 <Button onPress={handleSubmit as any} title="Submit" />

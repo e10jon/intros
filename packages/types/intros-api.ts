@@ -80,6 +80,8 @@ export type Body<
       name?: string;
       bio?: string;
       title?: string;
+      country?: string;
+      province?: string;
     }
   : P extends "/api/conversation"
   ? {
