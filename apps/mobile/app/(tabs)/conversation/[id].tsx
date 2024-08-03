@@ -69,7 +69,7 @@ export default function Conversation() {
         <Text>{profiles?.map((p) => p.name).join(" + ")}</Text>
       </View>
 
-      <ScrollView styles={styles.messagesContainer}>
+      <ScrollView style={styles.messagesContainer}>
         {messages && messages.map((m) => <Message key={m.id} message={m} />)}
       </ScrollView>
 

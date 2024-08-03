@@ -3,7 +3,7 @@ import { SignedIn, SignedOut } from "@clerk/clerk-expo";
 import { Data } from "@intros/types";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export default function Inbox() {
   const [numTokensAvailable, setNumTokensAvailable] = useState<number | null>();
@@ -24,7 +24,7 @@ export default function Inbox() {
   }, []);
 
   return (
-    <View>
+    <ScrollView>
       <SignedIn>
         <Text>Inbox</Text>
         <Text>Num tokens available: {numTokensAvailable}</Text>
@@ -41,6 +41,6 @@ export default function Inbox() {
       <SignedOut>
         <Text>Must sign in for inbox</Text>
       </SignedOut>
-    </View>
+    </ScrollView>
   );
 }
