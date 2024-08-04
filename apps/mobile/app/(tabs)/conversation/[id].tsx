@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { Link, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { introsFetch } from "@/lib/intros-fetch";
 import { Data } from "@intros/types";
 import Message from "@/components/Message";
@@ -26,6 +26,8 @@ export default function Conversation() {
     Data<"/api/conversations/[id]">["messages"] | null
   >();
   const [isSending, setIsSending] = useState(false);
+
+  const scrollView = useRef<ScrollView>(null);
 
   const fetchConversation = async () => {
     setConversation(null);
@@ -69,7 +71,13 @@ export default function Conversation() {
         <Text>{profiles?.map((p) => p.name).join(" + ")}</Text>
       </View>
 
-      <ScrollView style={styles.messagesContainer}>
+      <ScrollView
+        ref={scrollView}
+        style={styles.messagesContainer}
+        onContentSizeChange={() => {
+          scrollView.current?.scrollToEnd({ animated: false });
+        }}
+      >
         {messages && messages.map((m) => <Message key={m.id} message={m} />)}
       </ScrollView>
 
@@ -87,7 +95,7 @@ export default function Conversation() {
 
 const styles = StyleSheet.create({
   root: {
-    flexGrow: 1,
+    height: "100%",
   },
   header: {
     alignItems: "center",

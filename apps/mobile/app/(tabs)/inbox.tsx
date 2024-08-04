@@ -2,7 +2,7 @@ import { introsFetch } from "@/lib/intros-fetch";
 import { SignedIn, SignedOut } from "@clerk/clerk-expo";
 import { Data } from "@intros/types";
 import { Link } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 
 export default function Inbox() {
@@ -13,8 +13,6 @@ export default function Inbox() {
   const [refreshing, setRefreshing] = useState(true);
 
   const fetchConversations = async () => {
-    setConversations(null);
-    setNumTokensAvailable(null);
     setRefreshing(true);
 
     const { conversations, numTokensAvailable } = await introsFetch(
