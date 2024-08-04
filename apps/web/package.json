@@ -9,7 +9,8 @@
     "lint": "next lint",
     "check-types": "tsc --noEmit -w",
     "job": "tsx -r dotenv/config lib/cli-job-runner.ts",
-    "recreate-cron-jobs": "npm run job recreateCronJobs"
+    "recreate-cron-jobs": "npm run job recreateCronJobs",
+    "bull-board": "tsx -r dotenv/config bullmq/bull-board.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.2.8",
@@ -25,9 +26,12 @@
     "svix": "^1.25.0"
   },
   "devDependencies": {
+    "@bull-board/api": "^5.21.3",
+    "@bull-board/fastify": "^5.21.3",
     "@intros/types": "*",
     "@types/node": "20.14.12",
     "@types/react": "18.3.3",
+    "fastify": "^4.28.1",
     "prisma": "^5.17.0",
     "tsx": "^4.16.2",
     "typescript": "5.5.4"
