@@ -32,6 +32,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-localization",
       "expo-router",
       [
         "@stripe/stripe-react-native",
@@ -40,7 +41,8 @@
           "enableGooglePay": false
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

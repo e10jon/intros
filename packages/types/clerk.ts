@@ -7,6 +7,11 @@ declare global {
     subscriptionIsActive?: boolean;
     numAvailableTokens?: number;
   }
+
+  // this is metadata that can be set from the client
+  interface UnsafeMetadata {
+    timeZone?: string;
+  }
 }
 
 export {};

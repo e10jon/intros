@@ -2,10 +2,12 @@ import { useState } from "react";
 import { TextInput, Button, View, Text } from "react-native";
 import { SignedIn, SignedOut, useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
+import { useCalendars } from "expo-localization";
 
 export default function SignUp() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
+  const calendars = useCalendars();
 
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +21,9 @@ export default function SignUp() {
       await signUp.create({
         emailAddress,
         password,
+        unsafeMetadata: {
+          timeZone: calendars[0].timeZone,
+        },
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });

@@ -188,10 +188,10 @@ model UserSettings {
   id                   String          @id @default(cuid())
   pushToken            String?
   emailFrequency       EmailFrequency?
-  sendEmailsTime       String?
+  sendEmailsTime       DateTime?
   sendEmailsDayOfWeek  DayOfWeek?
   dailyIntrosLimit     Int?
-  dailyIntrosResetTime String?
+  dailyIntrosResetTime DateTime?
   timeZone             String?
 
   userId String @unique

@@ -79,7 +79,7 @@ export type WebhookPayload<
         saml_accounts: [];
         totp_enabled: boolean;
         two_factor_enabled: boolean;
-        unsafe_metadata: {};
+        unsafe_metadata: UnsafeMetadata;
         updated_at: number;
         username: string | null;
         verification_attempts_remaining: number;

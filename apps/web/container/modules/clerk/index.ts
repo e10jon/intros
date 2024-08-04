@@ -2,9 +2,9 @@ import { User as ClerkUser } from "@clerk/nextjs/server";
 import { WebhookPayload } from "@/container/modules/clerk/types";
 import { Container } from "../..";
 import { clerkClient } from "@clerk/nextjs/server";
-import { numTokensPerMonth } from "@/lib/constants";
+import { defaultDailyIntrosLimit, numTokensPerMonth } from "@/lib/constants";
 import { User } from "@prisma/client";
-import { addMonths } from "date-fns";
+import { addHours, addMonths, startOfDay, startOfToday } from "date-fns";
 
 export class ClerkModule {
   constructor(private cnt: Container) {}
@@ -16,10 +16,13 @@ export class ClerkModule {
   ) => {
     const phoneNumber = payload.data.phone_numbers[0];
     const emailAddress = payload.data.email_addresses[0];
+    const clerkId = payload.data.id;
+    const timeZone = payload.data.unsafe_metadata.timeZone;
 
     const email = emailAddress.email_address;
-    const clerkId = payload.data.id;
     const data = { email, phone: phoneNumber?.phone_number };
+
+    const now = new Date();
 
     // create or update the database user
     const prismaUser = await this.cnt.prisma.user.upsert({
@@ -27,11 +30,19 @@ export class ClerkModule {
       create: {
         ...data,
         clerkId,
-        nextTokenReset: addMonths(new Date(), 1),
+        nextTokenReset: addMonths(now, 1),
         // create the monthly tokens for new users
         tokens: {
           createMany: {
             data: [...new Array(numTokensPerMonth)].map(() => ({})),
+          },
+        },
+        settings: {
+          create: {
+            dailyIntrosLimit: defaultDailyIntrosLimit,
+            timeZone,
+            dailyIntrosResetTime: addHours(startOfDay(now), 5), // 5 am default
+            sendEmailsTime: addHours(startOfDay(now), 12), // 12 pm default
           },
         },
       },

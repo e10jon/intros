@@ -34,6 +34,8 @@ export class JobsModule {
         })),
       });
 
+      // update clerk
+
       console.log(`${user.email} ${numTokensToCreate} tokens created`);
     }
   }
