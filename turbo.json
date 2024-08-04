@@ -20,6 +20,9 @@
     "worker": {
       "persistent": true,
       "cache": false
+    },
+    "recreate-cron-jobs": {
+      "cache": false
     }
   }
 }

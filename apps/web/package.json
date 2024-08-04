@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc --noEmit -w",
-    "job": "tsx -r dotenv/config lib/cli-job-runner.ts"
+    "job": "tsx -r dotenv/config lib/cli-job-runner.ts",
+    "recreate-cron-jobs": "npm run job recreateCronJobs"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.2.8",

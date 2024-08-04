@@ -2,7 +2,7 @@
   "name": "intros",
   "private": true,
   "scripts": {
-    "dev": "turbo dev ngrok worker check-types"
+    "dev": "turbo dev ngrok worker check-types recreate-cron-jobs"
   },
   "devDependencies": {
     "turbo": "^2.0.9"
