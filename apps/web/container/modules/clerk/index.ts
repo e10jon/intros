@@ -80,7 +80,7 @@ export class ClerkModule {
         where: { userId: prismaUser.id, conversationId: null },
       });
 
-      if (numAvailableTokens !== publicMetadata.numAvailableTokens) {
+      if (numAvailableTokens !== clerkUser.publicMetadata.numAvailableTokens) {
         publicMetadata.numAvailableTokens = numAvailableTokens;
       }
 
