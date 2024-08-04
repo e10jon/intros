@@ -1,9 +1,10 @@
-import { auth, User as ClerkUser, currentUser } from "@clerk/nextjs/server";
+import { User as ClerkUser } from "@clerk/nextjs/server";
 import { WebhookPayload } from "@/container/modules/clerk/types";
 import { Container } from "../..";
 import { clerkClient } from "@clerk/nextjs/server";
 import { numTokensPerMonth } from "@/lib/constants";
 import { User } from "@prisma/client";
+import { addMonths } from "date-fns";
 
 export class ClerkModule {
   constructor(private cnt: Container) {}
@@ -26,6 +27,7 @@ export class ClerkModule {
       create: {
         ...data,
         clerkId,
+        nextTokenReset: addMonths(new Date(), 1),
         // create the monthly tokens for new users
         tokens: {
           createMany: {

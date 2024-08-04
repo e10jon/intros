@@ -1,10 +1,20 @@
 import { Worker } from "bullmq";
 import { connection } from "./connection";
 import { defaultQueueName } from "./queue";
+import { Container } from "@/container";
+import { isValidJob } from "@/lib/is-valid-job";
 
 const worker = new Worker(
   defaultQueueName,
   async (job) => {
+    if (!isValidJob(job.name)) {
+      console.error(`Invalid job "${job.name}"`);
+      return true;
+    }
+
+    const cnt = await Container.init();
+    await cnt.jobs[job.name]();
+
     // work
     console.log(
       `Worker completed job "${job.name}" with args ${JSON.stringify(

@@ -1,19 +1,17 @@
 import { Container } from "@/container";
 import { inspect } from "@/lib/inspect";
-import { join } from "path";
+import { isValidJob } from "./is-valid-job";
 
 async function run() {
   const job = process.argv[2];
   if (!job) throw new Error("No job provided");
+  if (!isValidJob(job)) throw new Error("invalid job!");
 
   const startedAt = new Date();
+  const cnt = await Container.init();
 
   console.info(`Running ${job}...`);
-
-  const file = require(join(__dirname, "./", job));
-
-  const cnt = await Container.init();
-  await file.default(cnt);
+  await cnt.jobs[job]();
 
   const endedAt = new Date();
 

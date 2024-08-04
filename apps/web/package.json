@@ -8,12 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc --noEmit -w",
-    "job": "tsx -r dotenv/config jobs/_runner.ts"
+    "job": "tsx -r dotenv/config lib/cli-job-runner.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.2.8",
     "@prisma/client": "^5.17.0",
     "bullmq": "^5.11.0",
+    "date-fns": "^3.6.0",
     "ioredis": "^5.4.1",
     "next": "^14.2.5",
     "nodemailer": "^6.9.14",

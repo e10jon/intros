@@ -40,11 +40,12 @@ enum DayOfWeek {
 }
 
 model User {
-  id               String  @id @default(cuid())
-  clerkId          String  @unique
-  email            String? @unique
-  phone            String? @unique
-  stripeCustomerId String? @unique
+  id               String    @id @default(cuid())
+  clerkId          String    @unique
+  email            String?   @unique
+  phone            String?   @unique
+  stripeCustomerId String?   @unique
+  nextTokenReset   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -60,6 +61,8 @@ model User {
   reportsAsSuspect          Report[]                   @relation("reportsAsSuspect")
   reportsAsReporter         Report[]                   @relation("reportsAsReporter")
   settings                  UserSettings?
+
+  @@index([nextTokenReset]) // for the add-monthly-tokens job
 }
 
 model Profile {

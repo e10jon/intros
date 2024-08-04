@@ -6,6 +6,7 @@ import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";
 import { ClerkModule } from "./modules/clerk";
 import { StripeModule } from "./modules/stripe";
+import { JobsModule } from "./modules/jobs";
 
 export class Container {
   private constructor() {}
@@ -41,8 +42,8 @@ export class Container {
 
   /** Run any function on the container asynchronously. */
   addJob = async <
-    K extends keyof Container,
-    A extends Container[K] extends (...args: infer B) => unknown
+    K extends keyof Container["jobs"],
+    A extends Container["jobs"][K] extends (...args: infer B) => unknown
       ? B | [...B, { jobOptions: JobsOptions }]
       : never
   >(
@@ -125,6 +126,7 @@ export class Container {
 
   stripe = new StripeModule(this);
   clerk = new ClerkModule(this);
+  jobs = new JobsModule(this);
 }
 
 const argHasJobOptions = (arg: unknown): arg is { jobOptions: JobsOptions } => {
