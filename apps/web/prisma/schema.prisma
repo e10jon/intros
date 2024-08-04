@@ -23,6 +23,12 @@ enum UserStatus {
   Suspended
 }
 
+enum EmailFrequency {
+  Daily
+  Weekly
+  Monthly
+}
+
 model User {
   id               String  @id @default(cuid())
   clerkId          String  @unique
@@ -37,11 +43,13 @@ model User {
   conversationsStarted      Conversation[]             @relation("userFrom")
   conversationsJoined       Conversation[]             @relation("userTo")
   conversationsRejected     Conversation[]             @relation("userRejected")
+  conversationsMuted        Conversation[]             @relation("userMuted")
   conversationNotifications ConversationNotification[]
   messages                  Message[]
   tokens                    Token[]
   reportsAsSuspect          Report[]                   @relation("reportsAsSuspect")
   reportsAsReporter         Report[]                   @relation("reportsAsReporter")
+  settings                  UserSettings?
 }
 
 model Profile {
@@ -74,6 +82,7 @@ model Conversation {
   fromUserId       String
   toUserId         String
   rejectedByUserId String?
+  mutedByUserId    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -82,6 +91,7 @@ model Conversation {
   userFrom      User                       @relation("userFrom", fields: [fromUserId], references: [id])
   userTo        User                       @relation("userTo", fields: [toUserId], references: [id])
   userRejected  User?                      @relation("userRejected", fields: [rejectedByUserId], references: [id])
+  userMuted     User?                      @relation("userMuted", fields: [mutedByUserId], references: [id])
   token         Token?
   notifications ConversationNotification[]
 
@@ -158,4 +168,21 @@ model ConversationNotification {
   conversation Conversation @relation(fields: [conversationId], references: [id])
 
   @@unique([userId, conversationId])
+}
+
+model UserSettings {
+  id                   String          @id @default(cuid())
+  pushToken            String?
+  emailFrequency       EmailFrequency?
+  sendEmailsTime       String?
+  dailyIntrosLimit     Int?
+  dailyIntrosResetTime String?
+  timeZone             String?
+
+  userId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
 }
