@@ -14,10 +14,22 @@ export async function POST(
   const prismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
   const conversation = await cnt.prisma.$transaction(async (tx) => {
-    const token = await cnt.prisma.token.findFirst({
+    const token = await tx.token.findFirst({
       where: { conversationId: null, userId: prismaUser.id },
     });
     if (!token) throw new Error("No tokens available");
+
+    const { numNewIntrosRemaining } = await tx.profile.findUniqueOrThrow({
+      where: { id: json.toUserId },
+      select: { numNewIntrosRemaining: true },
+    });
+
+    if (
+      typeof numNewIntrosRemaining === "number" &&
+      numNewIntrosRemaining <= 0
+    ) {
+      throw new Error("No intros remaining for profile");
+    }
 
     return await tx.conversation.create({
       data: {

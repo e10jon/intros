@@ -53,15 +53,16 @@ model User {
 }
 
 model Profile {
-  id           String   @id @default(cuid())
-  name         String?
-  photo        String?
-  title        String?
-  bio          String?
-  interests    String[]
-  country      String?
-  province     String?
-  responseRate Float?
+  id                    String   @id @default(cuid())
+  name                  String?
+  photo                 String?
+  title                 String?
+  bio                   String?
+  interests             String[]
+  country               String?
+  province              String?
+  responseRate          Float?
+  numNewIntrosRemaining Int?
 
   userId String @unique
 
