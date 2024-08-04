@@ -2,7 +2,7 @@ import { User as ClerkUser } from "@clerk/nextjs/server";
 import { WebhookPayload } from "@/container/modules/clerk/types";
 import { Container } from "../..";
 import { clerkClient } from "@clerk/nextjs/server";
-import { defaultDailyIntrosLimit, numTokensPerMonth } from "@/lib/constants";
+import { defaultDailyIntrosLimit, numTokensPerMonth } from "@intros/types";
 import { User } from "@prisma/client";
 import { addHours, addMonths, startOfDay, startOfToday } from "date-fns";
 

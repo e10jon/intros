@@ -1,8 +1,11 @@
 import {
+  DayOfWeek,
+  EmailFrequency,
   Conversation,
   Message as PrismaMessage,
   Profile,
   ConversationNotification,
+  UserSettings,
 } from "@prisma/client";
 import Stripe from "stripe";
 
@@ -16,6 +19,7 @@ const paths = [
   "/api/conversations/[id]",
   "/api/conversations/[id]/message",
   "/api/conversation",
+  "/api/settings",
 ] as const;
 
 type Paths = typeof paths;
@@ -50,6 +54,8 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
   ? SingleConversation
   : P extends "/api/conversations/[id]/message"
   ? { message: Message }
+  : P extends "/api/settings"
+  ? { settings: UserSettings }
   : unknown;
 
 export type Message = Pick<
@@ -94,6 +100,16 @@ export type Body<
   ? {
       body: string;
     }
+  : P extends "/api/settings"
+  ? {
+      pushToken?: string;
+      emailFrequency?: EmailFrequency;
+      sendEmailsTime?: Date;
+      sendEmailsDayOfWeek?: DayOfWeek;
+      dailyIntrosLimit?: number;
+      dailyIntrosResetTime?: Date;
+      timeZone?: string;
+    }
   : never;
 
 export type Params<P extends Path> = P extends
@@ -102,3 +118,5 @@ export type Params<P extends Path> = P extends
   | "/api/conversations/[id]/message"
   ? { id: string }
   : never;
+
+export { EmailFrequency, DayOfWeek };

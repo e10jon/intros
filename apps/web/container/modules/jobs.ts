@@ -1,6 +1,6 @@
 import { Container } from "@/container";
 import { endOfToday, startOfToday } from "date-fns";
-import { numTokensPerMonth } from "@/lib/constants";
+import { numTokensPerMonth } from "@intros/types";
 
 export class JobsModule {
   constructor(private cnt: Container) {}

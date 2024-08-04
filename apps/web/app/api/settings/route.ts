@@ -1,36 +1,36 @@
 import { NextResponse } from "next/server";
-import { Container } from "@/container";
 import { Data, Body } from "@intros/types";
+import { Container } from "@/container";
 
-// load current user profile
-export async function GET(): Promise<NextResponse<Data<"/api/profile">>> {
+// load current user settings
+export async function GET(): Promise<NextResponse<Data<"/api/settings">>> {
   const cnt = await Container.init();
   const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
-  let profile = await cnt.prisma.profile.findUnique({
+  let settings = await cnt.prisma.userSettings.findUnique({
     where: { userId: currentPrismaUser.id },
   });
-  if (!profile)
-    profile = await cnt.prisma.profile.create({
+  if (!settings)
+    settings = await cnt.prisma.userSettings.create({
       data: { userId: currentPrismaUser.id },
     });
 
-  return NextResponse.json({ profile });
+  return NextResponse.json({ settings });
 }
 
 // update current user profile
 export async function POST(
   request: Request
-): Promise<NextResponse<Data<"/api/profile">>> {
-  const body = (await request.json()) as Body<"/api/profile">;
+): Promise<NextResponse<Data<"/api/settings">>> {
+  const body = (await request.json()) as Body<"/api/settings">;
 
   const cnt = await Container.init();
   const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
-  const profile = await cnt.prisma.profile.update({
+  const settings = await cnt.prisma.userSettings.update({
     where: { userId: currentPrismaUser.id },
     data: body,
   });
 
-  return NextResponse.json({ profile });
+  return NextResponse.json({ settings });
 }
