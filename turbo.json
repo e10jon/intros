@@ -23,6 +23,10 @@
     },
     "recreate-cron-jobs": {
       "cache": false
+    },
+    "bull-board": {
+      "persistent": true,
+      "cache": false
     }
   }
 }
