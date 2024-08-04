@@ -19,25 +19,31 @@ export async function POST(
     });
     if (!token) throw new Error("No tokens available");
 
+    // make sure the profile has intros remaining
     const { numNewIntrosRemaining } = await tx.profile.findUniqueOrThrow({
-      where: { id: json.toUserId },
+      where: { userId: json.toUserId },
       select: { numNewIntrosRemaining: true },
     });
 
-    if (
-      typeof numNewIntrosRemaining === "number" &&
-      numNewIntrosRemaining <= 0
-    ) {
+    if (numNewIntrosRemaining <= 0) {
       throw new Error("No intros remaining for profile");
     }
 
-    return await tx.conversation.create({
+    const conversation = await tx.conversation.create({
       data: {
         fromUserId: prismaUser.id,
         toUserId: json.toUserId,
         token: { connect: { id: token.id } },
       },
     });
+
+    // decrement the profile's intros remaining
+    await tx.profile.update({
+      where: { userId: json.toUserId },
+      data: { numNewIntrosRemaining: { decrement: 1 } },
+    });
+
+    return conversation;
   });
 
   const [messages, profiles, _, notification] = await Promise.all([

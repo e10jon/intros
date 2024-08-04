@@ -1,7 +1,7 @@
 import { auth, User as ClerkUser, currentUser } from "@clerk/nextjs/server";
 import { Prisma, User } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { Queue } from "bullmq";
+import { JobsOptions, Queue } from "bullmq";
 import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";
 import { ClerkModule } from "./modules/clerk";
@@ -38,6 +38,27 @@ export class Container {
       },
     },
   });
+
+  /** Run any function on the container asynchronously. */
+  addJob = async <
+    K extends keyof Container,
+    A extends Container[K] extends (...args: infer B) => unknown
+      ? B | [...B, { jobOptions: JobsOptions }]
+      : never
+  >(
+    fn: K,
+    ...args: A
+  ) => {
+    // if the last arg is { jobOptions: ... }, pick it off and provide it as job options to the job
+    const lastArg = args[args.length - 1];
+    const jobOptions = argHasJobOptions(lastArg)
+      ? lastArg.jobOptions
+      : undefined;
+
+    const job = await this.queue.add(fn, { args, fn }, jobOptions);
+    console.log(`Added job: ${fn}`, { args, jobOptions });
+    return job;
+  };
 
   private _currentAuth?: ReturnType<typeof auth>;
   private _currentClerkUser?: Promise<ClerkUser | null>;
@@ -105,3 +126,7 @@ export class Container {
   stripe = new StripeModule(this);
   clerk = new ClerkModule(this);
 }
+
+const argHasJobOptions = (arg: unknown): arg is { jobOptions: JobsOptions } => {
+  return !!(arg && typeof arg === "object" && "jobOptions" in arg);
+};

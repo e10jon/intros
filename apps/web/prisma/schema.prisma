@@ -29,6 +29,16 @@ enum EmailFrequency {
   Monthly
 }
 
+enum DayOfWeek {
+  Sunday
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+}
+
 model User {
   id               String  @id @default(cuid())
   clerkId          String  @unique
@@ -62,7 +72,7 @@ model Profile {
   country               String?
   province              String?
   responseRate          Float?
-  numNewIntrosRemaining Int?
+  numNewIntrosRemaining Int      @default(1)
 
   userId String @unique
 
@@ -176,6 +186,7 @@ model UserSettings {
   pushToken            String?
   emailFrequency       EmailFrequency?
   sendEmailsTime       String?
+  sendEmailsDayOfWeek  DayOfWeek?
   dailyIntrosLimit     Int?
   dailyIntrosResetTime String?
   timeZone             String?
