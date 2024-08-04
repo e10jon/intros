@@ -5,7 +5,7 @@ declare global {
     creationIsComplete?: boolean;
     stripeSubscriptionId?: string;
     subscriptionIsActive?: boolean;
-    tokenIsAvailable?: boolean;
+    numAvailableTokens?: number;
   }
 }
 

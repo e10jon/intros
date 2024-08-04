@@ -67,12 +67,8 @@ export class ClerkModule {
         where: { userId: prismaUser.id, conversationId: null },
       });
 
-      if (
-        (numAvailableTokens > 0 &&
-          !clerkUser.publicMetadata.tokenIsAvailable) ||
-        (numAvailableTokens <= 0 && clerkUser.publicMetadata.tokenIsAvailable)
-      ) {
-        publicMetadata.tokenIsAvailable = numAvailableTokens > 0;
+      if (numAvailableTokens !== publicMetadata.numAvailableTokens) {
+        publicMetadata.numAvailableTokens = numAvailableTokens;
       }
 
       // check for user creation

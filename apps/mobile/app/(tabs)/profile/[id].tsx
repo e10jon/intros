@@ -40,7 +40,7 @@ export default function Profile() {
   const handleStartConversationPress = () => {
     if (!user) return Alert.alert("Please sign in to send a message");
 
-    if (!user.publicMetadata.tokenIsAvailable)
+    if ((user.publicMetadata.numAvailableTokens ?? 0) === 0)
       return Alert.alert("No tokens available");
 
     setIsComposingMessage(true);
