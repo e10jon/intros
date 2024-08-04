@@ -3,6 +3,7 @@ import { Container } from "@/container";
 import { Data } from "@intros/types";
 import { selectArgsForMessage } from "@/lib/prisma";
 
+// load a conversation and its messages (and profiles)
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
@@ -11,7 +12,7 @@ export async function GET(
   const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
   // fetch the conversation and its messages
-  const [conversation, messages] = await Promise.all([
+  const [conversation, messages, notification] = await Promise.all([
     cnt.prisma.conversation.findUniqueOrThrow({
       where: {
         id: params.id,
@@ -27,6 +28,18 @@ export async function GET(
       orderBy: { createdAt: "asc" },
       select: selectArgsForMessage,
     }),
+    // mark the notification as read
+    cnt.prisma.conversationNotification
+      .update({
+        where: {
+          userId_conversationId: {
+            userId: currentPrismaUser.id,
+            conversationId: params.id,
+          },
+        },
+        data: { numUnreadMessages: 0, seenAt: new Date() },
+      })
+      .catch(() => null),
   ]);
 
   // fetch the profiles of the users in the conversation

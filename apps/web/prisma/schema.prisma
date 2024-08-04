@@ -33,14 +33,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profile               Profile?
-  conversationsStarted  Conversation[] @relation("userFrom")
-  conversationsJoined   Conversation[] @relation("userTo")
-  conversationsRejected Conversation[] @relation("userRejected")
-  messages              Message[]
-  tokens                Token[]
-  reportsAsSuspect      Report[]       @relation("reportsAsSuspect")
-  reportsAsReporter     Report[]       @relation("reportsAsReporter")
+  profile                   Profile?
+  conversationsStarted      Conversation[]             @relation("userFrom")
+  conversationsJoined       Conversation[]             @relation("userTo")
+  conversationsRejected     Conversation[]             @relation("userRejected")
+  conversationNotifications ConversationNotification[]
+  messages                  Message[]
+  tokens                    Token[]
+  reportsAsSuspect          Report[]                   @relation("reportsAsSuspect")
+  reportsAsReporter         Report[]                   @relation("reportsAsReporter")
 }
 
 model Profile {
@@ -77,11 +78,12 @@ model Conversation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  messages     Message[]
-  userFrom     User      @relation("userFrom", fields: [fromUserId], references: [id])
-  userTo       User      @relation("userTo", fields: [toUserId], references: [id])
-  userRejected User?     @relation("userRejected", fields: [rejectedByUserId], references: [id])
-  token        Token?
+  messages      Message[]
+  userFrom      User                       @relation("userFrom", fields: [fromUserId], references: [id])
+  userTo        User                       @relation("userTo", fields: [toUserId], references: [id])
+  userRejected  User?                      @relation("userRejected", fields: [rejectedByUserId], references: [id])
+  token         Token?
+  notifications ConversationNotification[]
 
   @@unique([fromUserId, toUserId])
   @@index([toUserId])
@@ -139,4 +141,21 @@ model Message {
   user         User         @relation(fields: [userId], references: [id])
 
   @@index([conversationId])
+}
+
+model ConversationNotification {
+  id                String    @id @default(cuid())
+  numUnreadMessages Int       @default(1)
+  seenAt            DateTime?
+
+  userId         String
+  conversationId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+
+  @@unique([userId, conversationId])
 }

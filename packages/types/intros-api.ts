@@ -2,6 +2,7 @@ import {
   Conversation,
   Message as PrismaMessage,
   Profile,
+  ConversationNotification,
 } from "@prisma/client";
 import Stripe from "stripe";
 
@@ -38,6 +39,7 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
         conversations: (Conversation & {
           userFrom: { profile: Profile | null } | null;
           userTo: { profile: Profile | null } | null;
+          notifications: ConversationNotification[];
         })[];
         numTokensAvailable: number;
       }

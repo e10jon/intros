@@ -3,6 +3,7 @@ import { Container } from "@/container";
 import { Body, Data } from "@intros/types";
 import { selectArgsForMessage } from "@/lib/prisma";
 
+// create a new conversation
 export async function POST(
   request: Request
 ): Promise<NextResponse<Data<"/api/conversation", "POST">>> {
@@ -27,7 +28,7 @@ export async function POST(
     });
   });
 
-  const [messages, profiles, _] = await Promise.all([
+  const [messages, profiles, _, notification] = await Promise.all([
     [
       await cnt.prisma.message.create({
         data: {
@@ -45,9 +46,28 @@ export async function POST(
         },
       },
     }),
+    // sync with clerk to update token availability
     cnt.clerk.syncWithClerk({
       prismaUser,
       clerkUser,
+    }),
+    // create a notification for the recipient
+    cnt.prisma.conversationNotification.upsert({
+      where: {
+        userId_conversationId: {
+          userId: json.toUserId,
+          conversationId: conversation.id,
+        },
+      },
+      update: {
+        seenAt: null,
+        numUnreadMessages: { increment: 1 },
+      },
+      create: {
+        userId: json.toUserId,
+        conversationId: conversation.id,
+        numUnreadMessages: 1,
+      },
     }),
   ]);
 

@@ -21,6 +21,9 @@ export async function GET(): Promise<NextResponse<Data<"/api/conversations">>> {
         userTo: {
           select: { profile: true },
         },
+        notifications: {
+          where: { userId: currentPrismaUser.id },
+        },
       },
     }),
     cnt.prisma.token.count({
