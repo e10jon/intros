@@ -6,17 +6,19 @@ export class JobsModule {
   constructor(private cnt: Container) {}
 
   async addMonthlyTokens() {
-    console.log("Creating tokens... ");
+    console.log("Adding monthly tokens... ");
 
     const users = await this.cnt.prisma.user.findMany({
       where: {
         AND: [
-          { nextTokenReset: { gte: startOfToday() } },
+          // get everyone in the past who might have missed a job
+          // { nextTokenReset: { gte: startOfToday() } },
           { nextTokenReset: { lt: endOfToday() } },
         ],
       },
       select: {
         id: true,
+        clerkId: true,
         email: true,
         _count: {
           select: { tokens: { where: { conversationId: null } } },
@@ -28,13 +30,18 @@ export class JobsModule {
       let numTokensToCreate = numTokensPerMonth - user._count.tokens;
       if (numTokensToCreate <= 0) continue;
 
-      await this.cnt.prisma.token.createMany({
-        data: [...new Array(numTokensToCreate)].map(() => ({
-          userId: user.id,
-        })),
-      });
-
-      // update clerk
+      await Promise.all([
+        this.cnt.prisma.token.createMany({
+          data: [...new Array(numTokensToCreate)].map(() => ({
+            userId: user.id,
+          })),
+        }),
+        this.cnt.clerk.apiClient.users.updateUserMetadata(user.clerkId, {
+          publicMetadata: {
+            numAvailableTokens: numTokensPerMonth,
+          },
+        }),
+      ]);
 
       console.log(`${user.email} ${numTokensToCreate} tokens created`);
     }
