@@ -91,6 +91,11 @@ export class ClerkModule {
       if (clerkUser.publicMetadata.isAdmin !== prismaUser.isAdmin)
         publicMetadata.isAdmin = prismaUser.isAdmin;
 
+      // check for suspension
+      const suspendedUntil = prismaUser.suspendedUntil?.toISOString();
+      if (clerkUser.publicMetadata.suspendedUntil !== suspendedUntil)
+        publicMetadata.suspendedUntil = suspendedUntil;
+
       if (Object.keys(publicMetadata).length === 0) return;
 
       console.log(

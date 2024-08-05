@@ -53,6 +53,7 @@ model User {
   stripeCustomerId String?   @unique
   nextTokenReset   DateTime?
   isAdmin          Boolean   @default(false)
+  suspendedUntil   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -69,6 +70,7 @@ model User {
   settings                  UserSettings?
 
   @@index([nextTokenReset]) // for the add-monthly-tokens job
+  @@index([suspendedUntil]) // lots of queries will filter by this
 }
 
 model Profile {
