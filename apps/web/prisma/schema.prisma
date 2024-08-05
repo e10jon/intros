@@ -39,6 +39,12 @@ enum DayOfWeek {
   Saturday
 }
 
+enum MessageSpecialCode {
+  Muted
+  Unmuted
+  Reported
+}
+
 model User {
   id               String    @id @default(cuid())
   clerkId          String    @unique
@@ -53,7 +59,6 @@ model User {
   profile                   Profile?
   conversationsStarted      Conversation[]             @relation("userFrom")
   conversationsJoined       Conversation[]             @relation("userTo")
-  conversationsRejected     Conversation[]             @relation("userRejected")
   conversationsMuted        Conversation[]             @relation("userMuted")
   conversationNotifications ConversationNotification[]
   messages                  Message[]
@@ -88,15 +93,14 @@ model Profile {
 }
 
 model Conversation {
-  id              String    @id @default(cuid())
-  acceptedAt      DateTime?
-  rejectedAt      DateTime?
-  rejectionReason String?
+  id         String    @id @default(cuid())
+  acceptedAt DateTime?
+  mutedAt    DateTime?
+  reportedAt DateTime?
 
-  fromUserId       String
-  toUserId         String
-  rejectedByUserId String?
-  mutedByUserId    String?
+  fromUserId    String
+  toUserId      String
+  mutedByUserId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,7 +108,6 @@ model Conversation {
   messages      Message[]
   userFrom      User                       @relation("userFrom", fields: [fromUserId], references: [id])
   userTo        User                       @relation("userTo", fields: [toUserId], references: [id])
-  userRejected  User?                      @relation("userRejected", fields: [rejectedByUserId], references: [id])
   userMuted     User?                      @relation("userMuted", fields: [mutedByUserId], references: [id])
   token         Token?
   notifications ConversationNotification[]
@@ -117,6 +120,7 @@ model Report {
   id       String         @id @default(cuid())
   status   ReportStatus   @default(Pending)
   strategy ReportStrategy
+  reason   String?
   notes    String?
 
   suspectId  String
@@ -152,8 +156,9 @@ model Token {
 }
 
 model Message {
-  id   String @id @default(cuid())
-  body String
+  id          String              @id @default(cuid())
+  body        String
+  specialCode MessageSpecialCode?
 
   userId         String
   conversationId String

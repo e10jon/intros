@@ -86,8 +86,11 @@ export default function Conversation() {
           style={styles.bodyInput}
           value={newBody}
           onChangeText={setNewBody}
+          onSubmitEditing={handleSendMessagePress}
         />
         <Button title="Send" onPress={handleSendMessagePress} />
+        <Button title="Mute" onPress={handleSendMessagePress} />
+        <Button title="Report" onPress={handleSendMessagePress} />
       </View>
     </View>
   );

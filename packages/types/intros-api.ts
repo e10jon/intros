@@ -18,6 +18,8 @@ const paths = [
   "/api/conversations",
   "/api/conversations/[id]",
   "/api/conversations/[id]/message",
+  "/api/conversations/[id]/mute",
+  "/api/conversations/[id]/report",
   "/api/conversation",
   "/api/settings",
 ] as const;
@@ -64,7 +66,10 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
         | { errorCode: "NoTokensAvailable" | "NoNewIntrosRemainaing" }
         | SingleConversation
     : never
-  : P extends "/api/conversations/[id]/message"
+  : P extends
+      | "/api/conversations/[id]/message"
+      | "/api/conversations/[id]/mute"
+      | "/api/conversations/[id]/report"
   ? { message: Message }
   : P extends "/api/settings"
   ? { settings: UserSettings }
@@ -111,6 +116,10 @@ export type Body<
   : P extends "/api/conversations/[id]/message"
   ? {
       body: string;
+    }
+  : P extends "/api/conversations/[id]/report"
+  ? {
+      reason: string;
     }
   : P extends "/api/settings"
   ? {
