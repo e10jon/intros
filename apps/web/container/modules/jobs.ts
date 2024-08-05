@@ -83,4 +83,8 @@ export class JobsModule {
       }),
     ]);
   }
+
+  async sandbox() {
+    // use this to test code via: npm run job sandbox
+  }
 }

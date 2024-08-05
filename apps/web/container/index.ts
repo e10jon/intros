@@ -4,9 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { JobsOptions, Queue } from "bullmq";
 import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";
-import { ClerkModule } from "./modules/clerk";
-import { StripeModule } from "./modules/stripe";
-import { JobsModule } from "./modules/jobs";
+import { ClerkModule, JobsModule, AiModule, StripeModule } from "./modules";
 
 export class Container {
   private constructor() {}
@@ -127,6 +125,7 @@ export class Container {
   stripe = new StripeModule(this);
   clerk = new ClerkModule(this);
   jobs = new JobsModule(this);
+  ai = new AiModule(this);
 }
 
 const argHasJobOptions = (arg: unknown): arg is { jobOptions: JobsOptions } => {

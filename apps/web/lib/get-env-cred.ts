@@ -1,6 +1,7 @@
 const env = {
   databaseUrl: process.env.DATABASE_URL,
   redisUrl: process.env.REDIS_URL,
+  openAiSecretKey: process.env.OPENAI_SECRET_KEY,
   sendgridApiKey: process.env.SENDGRID_API_KEY,
   stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
