@@ -37,19 +37,23 @@ export default function Inbox() {
       }
     >
       <SignedIn>
-        <Text>Inbox</Text>
-        <Text>Num tokens available: {numTokensAvailable}</Text>
+        <View style={{ marginBottom: 10 }}>
+          <Text>Inbox</Text>
+          <Text>Num tokens available: {numTokensAvailable}</Text>
+        </View>
 
         {conversations?.map((conversation) => {
           const notification = conversation.notifications[0];
           return (
-            <View key={conversation.id}>
+            <View key={conversation.id} style={{ marginBottom: 10 }}>
               <Link href={`/conversation/${conversation.id}`}>Link</Link>
               <Text>From: {conversation.userFrom?.profile?.name}</Text>
               <Text>To: {conversation.userTo?.profile?.name}</Text>
               <Text>
                 Unread: {notification?.numUnreadMessages}, Seen?{" "}
-                {notification?.seenAt ? "Y" : "N"}
+                {notification?.seenAt ? "Y" : "N"}, Muted?{" "}
+                {conversation.mutedAt ? "Y" : "N"}, Reported?{" "}
+                {conversation.reportedAt ? "Y" : "N"}
               </Text>
             </View>
           );

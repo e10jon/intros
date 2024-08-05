@@ -8,6 +8,7 @@ export const selectArgsForMessage = {
   id: true,
   body: true,
   userId: true,
+  specialCode: true,
   createdAt: true,
   updatedAt: true,
   user: { select: { profile: { select: { id: true } } } },

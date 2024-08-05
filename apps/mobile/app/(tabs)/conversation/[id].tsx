@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   ScrollView,
   StyleSheet,
@@ -65,6 +66,66 @@ export default function Conversation() {
     setMessages((prev) => (prev ? [...prev, message] : [message]));
   };
 
+  const handleMutePress = async () => {
+    Alert.alert("", "Are you sure you want to mute this conversation?", [
+      {
+        text: "Yes",
+        onPress: async () => {
+          const { message } = await introsFetch(
+            `/api/conversations/[id]/mute`,
+            {
+              method: "POST",
+              body: {},
+              params: { id },
+            }
+          );
+
+          setIsSending(false);
+          setNewBody("");
+          setMessages((prev) => (prev ? [...prev, message] : [message]));
+        },
+        style: "destructive",
+      },
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+    ]);
+  };
+
+  const handleReportPress = async () => {
+    Alert.prompt(
+      "",
+      "If you want to report this conversation, please tell us why:",
+      [
+        {
+          text: "Report",
+          onPress: async (reason) => {
+            if (!reason) return;
+
+            const { message } = await introsFetch(
+              `/api/conversations/[id]/report`,
+              {
+                method: "POST",
+                body: { reason },
+                params: { id },
+              }
+            );
+
+            setIsSending(false);
+            setNewBody("");
+            setMessages((prev) => (prev ? [...prev, message] : [message]));
+          },
+          style: "destructive",
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.root}>
       <View style={styles.header}>
@@ -89,8 +150,8 @@ export default function Conversation() {
           onSubmitEditing={handleSendMessagePress}
         />
         <Button title="Send" onPress={handleSendMessagePress} />
-        <Button title="Mute" onPress={handleSendMessagePress} />
-        <Button title="Report" onPress={handleSendMessagePress} />
+        <Button title="Mute" onPress={handleMutePress} />
+        <Button title="Report" onPress={handleReportPress} />
       </View>
     </View>
   );

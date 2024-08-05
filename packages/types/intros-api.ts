@@ -77,7 +77,7 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
 
 export type Message = Pick<
   PrismaMessage,
-  "id" | "body" | "createdAt" | "updatedAt" | "userId"
+  "id" | "body" | "createdAt" | "updatedAt" | "userId" | "specialCode"
 > & {
   user: { profile: { id: string } | null } | null;
 };
@@ -117,6 +117,8 @@ export type Body<
   ? {
       body: string;
     }
+  : P extends "/api/conversations/[id]/mute"
+  ? {} // needs to have something
   : P extends "/api/conversations/[id]/report"
   ? {
       reason: string;
@@ -137,6 +139,8 @@ export type Params<P extends Path> = P extends
   | "/api/profiles/[id]"
   | "/api/conversations/[id]"
   | "/api/conversations/[id]/message"
+  | "/api/conversations/[id]/mute"
+  | "/api/conversations/[id]/report"
   ? { id: string }
   : never;
 

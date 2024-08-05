@@ -20,7 +20,15 @@ export default function Message({
           : styles.messageToUser,
       ]}
     >
-      <Text style={styles.message}>{message.body}</Text>
+      <Text style={styles.message}>
+        {(() => {
+          if (message.specialCode === "Muted")
+            return "The conversation was muted";
+          if (message.specialCode === "Reported")
+            return "The conversation was reported";
+          return message.body;
+        })()}
+      </Text>
     </View>
   );
 }
