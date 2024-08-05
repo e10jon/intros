@@ -22,6 +22,11 @@ export async function POST(
       ? conversation.toUserId
       : conversation.fromUserId;
 
+  const suspectProfile = await cnt.prisma.profile.findFirst({
+    where: { userId: suspectId },
+    select: { id: true },
+  });
+
   // create the message and the report
   const [message, report] = await Promise.all([
     cnt.prisma.message.create({
@@ -40,6 +45,8 @@ export async function POST(
         reason: json.reason,
         suspectId,
         reporterId: currentPrismaUser.id,
+        conversationId: params.id,
+        profileId: suspectProfile?.id,
       },
     }),
     cnt.prisma.conversation.update({

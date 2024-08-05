@@ -29,6 +29,7 @@ export default async function Reports() {
             <th>Profile</th>
             <th>Reason</th>
             <th>Notes</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -49,6 +50,7 @@ export default async function Reports() {
               </td>
               <td>{report.reason}</td>
               <td>{report.notes}</td>
+              <td>Suspend user | Ban user</td>
             </tr>
           ))}
         </tbody>
