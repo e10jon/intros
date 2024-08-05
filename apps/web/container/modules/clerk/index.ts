@@ -79,7 +79,6 @@ export class ClerkModule {
       const numAvailableTokens = await this.cnt.prisma.token.count({
         where: { userId: prismaUser.id, conversationId: null },
       });
-
       if (numAvailableTokens !== clerkUser.publicMetadata.numAvailableTokens) {
         publicMetadata.numAvailableTokens = numAvailableTokens;
       }
@@ -87,6 +86,10 @@ export class ClerkModule {
       // check for user creation
       if (!clerkUser.publicMetadata.creationIsComplete)
         publicMetadata.creationIsComplete = true;
+
+      // check for admin privilege
+      if (clerkUser.publicMetadata.isAdmin !== prismaUser.isAdmin)
+        publicMetadata.isAdmin = prismaUser.isAdmin;
 
       if (Object.keys(publicMetadata).length === 0) return;
 

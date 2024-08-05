@@ -9,8 +9,12 @@ import { ClerkModule, JobsModule, AiModule, StripeModule } from "./modules";
 export class Container {
   private constructor() {}
 
-  static async init() {
+  static async init(opts?: { requireAdmin?: boolean }) {
     const cnt = new Container();
+
+    if (opts?.requireAdmin)
+      await cnt.getCurrentClerkUserOrThrow({ requireAdmin: true });
+
     return cnt;
   }
 
@@ -104,15 +108,19 @@ export class Container {
     return await this._currentPrismaUser;
   }
 
-  getCurrentClerkUserOrThrow = async () => {
+  getCurrentClerkUserOrThrow = async (opts?: { requireAdmin?: boolean }) => {
     const user = await this.currentClerkUser;
     if (!user) throw new Error("No current clerk user found!");
+    if (opts?.requireAdmin && !user.publicMetadata.isAdmin)
+      throw new Error("User is not an admin");
     return user;
   };
 
-  getCurrentPrismaUserOrThrow = async () => {
+  getCurrentPrismaUserOrThrow = async (opts?: { requireAdmin?: boolean }) => {
     const user = await this.currentPrismaUser;
     if (!user) throw new Error("No current prisma user found!");
+    if (opts?.requireAdmin && !user.isAdmin)
+      throw new Error("User is not an admin!");
     return user;
   };
 

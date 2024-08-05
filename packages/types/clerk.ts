@@ -6,6 +6,7 @@ declare global {
     stripeSubscriptionId?: string;
     subscriptionIsActive?: boolean;
     numAvailableTokens?: number;
+    isAdmin?: boolean;
   }
 
   // this is metadata that can be set from the client

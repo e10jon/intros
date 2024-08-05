@@ -52,6 +52,7 @@ model User {
   phone            String?   @unique
   stripeCustomerId String?   @unique
   nextTokenReset   DateTime?
+  isAdmin          Boolean   @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -87,7 +88,8 @@ model Profile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+  reports Report[]
 
   @@index([userId])
 }
@@ -111,6 +113,7 @@ model Conversation {
   userMuted     User?                      @relation("userMuted", fields: [mutedByUserId], references: [id])
   token         Token?
   notifications ConversationNotification[]
+  reports       Report[]
 
   @@unique([fromUserId, toUserId])
   @@index([toUserId])
@@ -123,14 +126,18 @@ model Report {
   reason   String?
   notes    String?
 
-  suspectId  String
-  reporterId String
+  suspectId      String
+  reporterId     String
+  conversationId String?
+  profileId      String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  reporter User @relation("reportsAsReporter", fields: [reporterId], references: [id])
-  suspect  User @relation("reportsAsSuspect", fields: [suspectId], references: [id])
+  reporter     User          @relation("reportsAsReporter", fields: [reporterId], references: [id])
+  suspect      User          @relation("reportsAsSuspect", fields: [suspectId], references: [id])
+  conversation Conversation? @relation(fields: [conversationId], references: [id])
+  profile      Profile?      @relation(fields: [profileId], references: [id])
 
   @@index([status])
   @@index([createdAt])
