@@ -1,13 +1,14 @@
 import OpenAI from "openai";
-import { Container } from "../";
+import { Container } from "..";
 import { getEnvCred } from "@/lib/get-env-cred";
+import { inspect } from "@/lib/inspect";
 
 export class AiModule {
   openAiApiClient = new OpenAI({ apiKey: getEnvCred("openAiSecretKey") });
 
   constructor(private cnt: Container) {}
 
-  async extractKeywordsFromBio(bio: string) {
+  async extractInterestsFromBio(bio: string): Promise<string[]> {
     const response = await this.openAiApiClient.chat.completions.create({
       model: "gpt-4o-mini",
       response_format: { type: "json_object" },
@@ -20,12 +21,17 @@ export class AiModule {
         { role: "user", content: bio },
       ],
     });
-    if (!response.choices[0].message.content) return;
+    if (!response.choices[0].message.content) return [];
 
     const { interests } = JSON.parse(response.choices[0].message.content) as {
       interests: string[];
     };
 
     return interests;
+  }
+
+  async getModerationScores(input: string) {
+    const response = await this.openAiApiClient.moderations.create({ input });
+    return response.results[0];
   }
 }

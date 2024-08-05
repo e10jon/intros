@@ -6,7 +6,6 @@
 
 ## TODOs
 
-- AI keywords for profile
 - Edit settings
 - Onboarding flow
 - Reporting

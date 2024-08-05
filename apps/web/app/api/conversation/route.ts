@@ -13,22 +13,45 @@ export async function POST(
   const clerkUser = await cnt.getCurrentClerkUserOrThrow();
   const prismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
+  // make sure the sender has tokens remaining
+  const token = await cnt.prisma.token.findFirst({
+    where: { conversationId: null, userId: prismaUser.id },
+  });
+  if (!token)
+    return NextResponse.json(
+      { errorCode: "NoTokensAvailable" },
+      { status: 400 }
+    );
+
+  // make sure the recipient has intros remaining
+  const { numNewIntrosRemaining } = await cnt.prisma.profile.findUniqueOrThrow({
+    where: { userId: json.toUserId },
+    select: { numNewIntrosRemaining: true },
+  });
+  if (numNewIntrosRemaining <= 0)
+    return NextResponse.json(
+      { errorCode: "NoNewIntrosRemainaing" },
+      { status: 400 }
+    );
+
+  // make sure the message passes AI moderation
+  const moderationScores = await cnt.ai.getModerationScores(json.body);
+  if (moderationScores.flagged) {
+    const flaggedCategories = Object.entries(moderationScores.categories)
+      .filter(([category, flagged]) => flagged)
+      .map(([category]) => category);
+
+    return NextResponse.json(
+      {
+        errorCode: "ModerationFail",
+        moderationCategories: flaggedCategories,
+      },
+      { status: 400 }
+    );
+  }
+
+  // create the conversation and decrement the recipient's intros remaining
   const conversation = await cnt.prisma.$transaction(async (tx) => {
-    const token = await tx.token.findFirst({
-      where: { conversationId: null, userId: prismaUser.id },
-    });
-    if (!token) throw new Error("No tokens available");
-
-    // make sure the profile has intros remaining
-    const { numNewIntrosRemaining } = await tx.profile.findUniqueOrThrow({
-      where: { userId: json.toUserId },
-      select: { numNewIntrosRemaining: true },
-    });
-
-    if (numNewIntrosRemaining <= 0) {
-      throw new Error("No intros remaining for profile");
-    }
-
     const conversation = await tx.conversation.create({
       data: {
         fromUserId: prismaUser.id,
@@ -37,7 +60,6 @@ export async function POST(
       },
     });
 
-    // decrement the profile's intros remaining
     await tx.profile.update({
       where: { userId: json.toUserId },
       data: { numNewIntrosRemaining: { decrement: 1 } },

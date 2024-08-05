@@ -38,10 +38,14 @@ export default function Profile() {
   }, [id]);
 
   const handleStartConversationPress = () => {
+    if (!profile) return;
     if (!user) return Alert.alert("Please sign in to send a message");
 
     if ((user.publicMetadata.numAvailableTokens ?? 0) === 0)
       return Alert.alert("No tokens available");
+
+    if (profile.numNewIntrosRemaining <= 0)
+      return Alert.alert("Profile has no intros available");
 
     setIsComposingMessage(true);
   };
@@ -49,15 +53,32 @@ export default function Profile() {
   const handleSendMessagePress = async () => {
     if (!profile) return;
 
-    const { conversation } = await introsFetch("/api/conversation", {
+    const response = await introsFetch("/api/conversation", {
       body: { toUserId: profile.userId, body: messageBody },
       method: "POST",
     });
 
+    if ("errorCode" in response) {
+      if (response.errorCode === "ModerationFail") {
+        Alert.alert(
+          "Failure",
+          `Message failed moderation: ${response.moderationCategories.join(
+            ", "
+          )}`
+        );
+      } else if (response.errorCode === "NoTokensAvailable") {
+        Alert.alert("Failure", "You have no tokens available.");
+      } else if (response.errorCode === "NoNewIntrosRemainaing") {
+        Alert.alert("Failure", "Recipient has no intros remaining.");
+      }
+      return;
+    }
+
+    // successful request:
     setMessageBody("");
     setIsComposingMessage(false);
 
-    router.push(`/conversation/${conversation.id}`);
+    router.push(`/conversation/${response.conversation.id}`);
   };
 
   return (
@@ -66,6 +87,10 @@ export default function Profile() {
       <Text>Name: {profile?.name}</Text>
       <Text>Title: {profile?.title}</Text>
       <Text>Bio: {profile?.bio}</Text>
+      <Text>
+        Can receive intros:{" "}
+        {profile && profile.numNewIntrosRemaining > 0 ? "Y" : "N"}
+      </Text>
 
       {conversation ? (
         <Link href={`/conversation/${conversation.id}`}>Conversation</Link>

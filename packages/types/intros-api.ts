@@ -50,8 +50,20 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
     : M extends "POST"
     ? SingleConversation
     : never
-  : P extends "/api/conversations/[id]" | "/api/conversation"
+  : P extends "/api/conversations/[id]"
   ? SingleConversation
+  : P extends "/api/conversation"
+  ? M extends "GET"
+    ? SingleConversation
+    : M extends "POST"
+    ?
+        | {
+            errorCode: "ModerationFail";
+            moderationCategories: string[];
+          }
+        | { errorCode: "NoTokensAvailable" | "NoNewIntrosRemainaing" }
+        | SingleConversation
+    : never
   : P extends "/api/conversations/[id]/message"
   ? { message: Message }
   : P extends "/api/settings"
@@ -120,3 +132,11 @@ export type Params<P extends Path> = P extends
   : never;
 
 export { EmailFrequency, DayOfWeek };
+
+export const errorCodes = [
+  "ModerationFail",
+  "NoTokensAvailable",
+  "NoNewIntrosRemainaing",
+] as const;
+
+export type ErrorCode = (typeof errorCodes)[number];
