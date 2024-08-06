@@ -1,6 +1,6 @@
 import { getClerkInstance } from "@clerk/clerk-expo";
 import { getEnvCred } from "../get-env-cred";
-import { Body, Data, Path, Params, Method } from "@intros/types";
+import { Body, Data, Path, Params, Method } from "@intros/shared";
 
 export const host = `https://${getEnvCred("introsApiHost")}`;
 export const urlScheme = "exp://"; // TODO: "intros://";

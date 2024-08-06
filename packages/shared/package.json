@@ -1,5 +1,5 @@
 {
-  "name": "@intros/types",
+  "name": "@intros/shared",
   "type": "module",
   "types": "index.ts",
   "scripts": {

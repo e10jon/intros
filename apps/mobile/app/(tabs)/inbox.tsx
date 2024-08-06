@@ -1,6 +1,6 @@
 import { introsFetch } from "@/lib/intros-fetch";
 import { SignedIn, SignedOut } from "@clerk/clerk-expo";
-import { Data } from "@intros/types";
+import { Data } from "@intros/shared";
 import { Link } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { RefreshControl, ScrollView, Text, View } from "react-native";

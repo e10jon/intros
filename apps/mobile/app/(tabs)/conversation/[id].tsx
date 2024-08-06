@@ -10,7 +10,7 @@ import {
 import { Link, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { introsFetch } from "@/lib/intros-fetch";
-import { Data } from "@intros/types";
+import { Data } from "@intros/shared";
 import Message from "@/components/Message";
 
 type RouteData = Data<"/api/conversations/[id]">;

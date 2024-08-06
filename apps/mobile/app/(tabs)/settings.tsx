@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { Formik, useFormikContext } from "formik";
-import { Body, DayOfWeek, EmailFrequency } from "@intros/types";
+import { Body, DayOfWeek, EmailFrequency } from "@intros/shared";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
-import { Data, Body } from "@intros/types";
+import { Data, Body } from "@intros/shared";
 
 // load current user profile
 export async function GET(): Promise<NextResponse<Data<"/api/profile">>> {

@@ -2,7 +2,7 @@ import { introsFetch } from "@/lib/intros-fetch";
 import { useEffect, useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 import { Formik, useFormikContext } from "formik";
-import { Body, Country, Province } from "@intros/types";
+import { Body, Country, Province } from "@intros/shared";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import { Picker } from "@react-native-picker/picker";
 

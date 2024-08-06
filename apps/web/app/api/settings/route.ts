@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { Data, Body } from "@intros/types";
+import { Data, Body } from "@intros/shared";
 import { Container } from "@/container";
+import { UserSettings } from "@prisma/client";
 
 // load current user settings
 export async function GET(): Promise<NextResponse<Data<"/api/settings">>> {
@@ -15,7 +16,7 @@ export async function GET(): Promise<NextResponse<Data<"/api/settings">>> {
       data: { userId: currentPrismaUser.id },
     });
 
-  return NextResponse.json({ settings });
+  return NextResponse.json({ settings: settingsResponseObject(settings) });
 }
 
 // update current user settings
@@ -32,5 +33,12 @@ export async function POST(
     data: body,
   });
 
-  return NextResponse.json({ settings });
+  return NextResponse.json({ settings: settingsResponseObject(settings) });
 }
+
+const settingsResponseObject = (settings: UserSettings) => ({
+  ...settings,
+  // converting dates to strings is only for typescript to be happy
+  sendEmailsTime: settings.sendEmailsTime?.toISOString() || "",
+  dailyIntrosResetTime: settings.dailyIntrosResetTime?.toISOString() || "",
+});

@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/clerk-expo";
-import { Data } from "@intros/types";
+import { Data } from "@intros/shared";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Message({

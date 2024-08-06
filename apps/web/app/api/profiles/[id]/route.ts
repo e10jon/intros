@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
-import { Data } from "@intros/types";
+import { Data } from "@intros/shared";
 
 export async function GET(
   request: Request,

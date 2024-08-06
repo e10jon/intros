@@ -2,7 +2,7 @@ import { Alert, Button, Text, TextInput, View } from "react-native";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { introsFetch } from "@/lib/intros-fetch";
-import { Data } from "@intros/types";
+import { Data } from "@intros/shared";
 import { useUser } from "@clerk/clerk-expo";
 
 type RouteData = Data<"/api/profiles/[id]">;

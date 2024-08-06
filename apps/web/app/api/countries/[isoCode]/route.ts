@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
 import { State } from "country-state-city";
-import { Data } from "@intros/types";
+import { Data } from "@intros/shared";
 
 // get the list of states for country
 export async function GET(

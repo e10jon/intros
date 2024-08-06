@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
 import timezones from "timezones-list";
-import { Data } from "@intros/types";
+import { Data } from "@intros/shared";
 
 // get the list of timezones
 export async function GET(): Promise<NextResponse<Data<"/api/timezones">>> {

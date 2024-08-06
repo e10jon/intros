@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Data } from "@intros/types";
+import { Data } from "@intros/shared";
 import { Link } from "expo-router";
 
 export default function Home() {

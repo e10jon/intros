@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Container } from "@/container";
-import { Body, Data } from "@intros/types";
+import { Body, Data } from "@intros/shared";
 import { selectArgsForMessage } from "@/lib/prisma";
 
 // create a new message in a conversation

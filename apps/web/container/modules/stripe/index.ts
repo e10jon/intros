@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { getEnvCred } from "@/lib/get-env-cred";
 import { Container } from "@/container";
-import { CreateSubscription } from "@intros/types";
+import { CreateSubscription } from "@intros/shared";
 
 export class StripeModule {
   constructor(private cnt: Container) {}

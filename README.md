@@ -7,7 +7,6 @@
 ## TODOs
 
 - Admin web interface for reporting
-- Edit settings
 - Onboarding flow
 - Profiles searching/filtering
 - Push notifications
