@@ -1,6 +1,7 @@
 import { Container } from "@/container";
-import { endOfToday, startOfToday } from "date-fns";
+import { endOfToday } from "date-fns";
 import { numTokensPerMonth } from "@intros/types";
+import { inspect } from "@/lib/inspect";
 
 export class JobsModule {
   constructor(private cnt: Container) {}
@@ -85,6 +86,17 @@ export class JobsModule {
   }
 
   async sandbox() {
-    // use this to test code via: npm run job sandbox
+    const response = await this.cnt.ai.reviewUserReport({
+      report: { reason: "he is harrassing me" },
+      profile: { title: "Senior Art Director", bio: "I am a loving person." },
+      messages: [
+        { body: "hey" },
+        { body: "where are you" },
+        { body: "i want to talk to you" },
+        { body: "i want to eat you" },
+      ],
+    });
+
+    inspect(response);
   }
 }

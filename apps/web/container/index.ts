@@ -9,11 +9,12 @@ import { ClerkModule, JobsModule, AiModule, StripeModule } from "./modules";
 export class Container {
   private constructor() {}
 
-  static async init(opts?: { requireAdmin?: boolean }) {
+  static async init(opts?: { requireAdmin?: boolean; requireUser?: boolean }) {
     const cnt = new Container();
 
     if (opts?.requireAdmin)
       await cnt.getCurrentClerkUserOrThrow({ requireAdmin: true });
+    else if (opts?.requireUser) await cnt.getCurrentClerkUserOrThrow();
 
     return cnt;
   }

@@ -16,6 +16,7 @@
     "@clerk/nextjs": "^5.2.8",
     "@prisma/client": "^5.17.0",
     "bullmq": "^5.11.0",
+    "country-state-city": "^3.2.1",
     "date-fns": "^3.6.0",
     "ioredis": "^5.4.1",
     "next": "^14.2.5",
