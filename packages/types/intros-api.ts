@@ -75,7 +75,16 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
       | "/api/conversations/[id]/report"
   ? { message: Message }
   : P extends "/api/settings"
-  ? { settings: UserSettings }
+  ? {
+      // need to convert dates to strings
+      settings: Omit<
+        UserSettings,
+        "sendEmailsTime" | "dailyIntrosResetTime"
+      > & {
+        sendEmailsTime: string | null;
+        dailyIntrosResetTime: string | null;
+      };
+    }
   : P extends "/api/countries"
   ? { countries: Country[] }
   : P extends "/api/countries/[isoCode]"
