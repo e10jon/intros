@@ -1,9 +1,10 @@
 import { introsFetch } from "@/lib/intros-fetch";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 import { Formik, useFormikContext } from "formik";
-import { Body } from "@intros/types";
+import { Body, Country, Province } from "@intros/types";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import { Picker } from "@react-native-picker/picker";
 
 const FetchProfile = () => {
   const { user } = useUser();
@@ -22,6 +23,54 @@ const FetchProfile = () => {
   return null;
 };
 
+const LocationPicker = () => {
+  const { setFieldValue, values } = useFormikContext<Body<"/api/profile">>();
+
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [provinces, setProvinces] = useState<Province[]>([]);
+
+  useEffect(() => {
+    introsFetch("/api/countries").then(({ countries }) => {
+      setCountries(countries);
+    });
+  }, []);
+
+  useEffect(() => {
+    const country = countries.find(({ name }) => name === values.country);
+    if (!country) return;
+    introsFetch("/api/countries/[isoCode]", {
+      params: { isoCode: country.isoCode },
+    }).then((res) => {
+      if ("errorCode" in res) return;
+      setProvinces(res.provinces);
+    });
+  }, [values.country]);
+
+  return (
+    <>
+      <Text>Country</Text>
+      <Picker
+        selectedValue={values.country}
+        onValueChange={(itemValue) => setFieldValue("country", itemValue)}
+      >
+        {countries.map(({ isoCode, name }) => (
+          <Picker.Item key={isoCode} label={name} value={name} />
+        ))}
+      </Picker>
+
+      <Text>Province</Text>
+      <Picker
+        selectedValue={values.province}
+        onValueChange={(itemValue) => setFieldValue("province", itemValue)}
+      >
+        {provinces.map(({ isoCode, name }) => (
+          <Picker.Item key={isoCode} label={name} value={name} />
+        ))}
+      </Picker>
+    </>
+  );
+};
+
 export default function EditProfile() {
   const updateBio = async (values: Body<"/api/profile">) => {
     await introsFetch("/api/profile", {
@@ -34,13 +83,11 @@ export default function EditProfile() {
     <View>
       <SignedIn>
         <Text>Edit Profile</Text>
-        <Formik<Body<"/api/profile">>
-          initialValues={{ name: "", title: "", bio: "" }}
-          onSubmit={updateBio}
-        >
+        <Formik<Body<"/api/profile">> initialValues={{}} onSubmit={updateBio}>
           {({ handleChange, handleBlur, handleSubmit, values }) => (
             <>
               <FetchProfile />
+
               <View>
                 <Text>Name</Text>
                 <TextInput
@@ -64,12 +111,7 @@ export default function EditProfile() {
                   multiline
                 />
 
-                <Text>Country</Text>
-                <TextInput
-                  onChangeText={handleChange("country")}
-                  onBlur={handleBlur("country")}
-                  value={values.country}
-                />
+                <LocationPicker />
 
                 <Button onPress={handleSubmit as any} title="Submit" />
               </View>

@@ -22,6 +22,8 @@ const paths = [
   "/api/conversations/[id]/report",
   "/api/conversation",
   "/api/settings",
+  "/api/countries",
+  "/api/countries/[isoCode]",
 ] as const;
 
 type Paths = typeof paths;
@@ -73,6 +75,10 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
   ? { message: Message }
   : P extends "/api/settings"
   ? { settings: UserSettings }
+  : P extends "/api/countries"
+  ? { countries: Country[] }
+  : P extends "/api/countries/[isoCode]"
+  ? { provinces: Province[] } | { errorCode: "CountryNotFound" }
   : unknown;
 
 export type Message = Pick<
@@ -133,6 +139,8 @@ export type Body<
       dailyIntrosResetTime?: Date;
       timeZone?: string;
     }
+  : P extends "/api/countries"
+  ? {}
   : never;
 
 export type Params<P extends Path> = P extends
@@ -142,6 +150,8 @@ export type Params<P extends Path> = P extends
   | "/api/conversations/[id]/mute"
   | "/api/conversations/[id]/report"
   ? { id: string }
+  : P extends "/api/countries/[isoCode]"
+  ? { isoCode: string }
   : never;
 
 export { EmailFrequency, DayOfWeek };
@@ -150,6 +160,10 @@ export const errorCodes = [
   "ModerationFail",
   "NoTokensAvailable",
   "NoNewIntrosRemainaing",
+  "CountryNotFound",
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];
+
+export type Country = { name: string; isoCode: string };
+export type Province = { name: string; isoCode: string };
