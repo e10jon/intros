@@ -24,6 +24,7 @@ const paths = [
   "/api/settings",
   "/api/countries",
   "/api/countries/[isoCode]",
+  "/api/timezones",
 ] as const;
 
 type Paths = typeof paths;
@@ -79,6 +80,8 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
   ? { countries: Country[] }
   : P extends "/api/countries/[isoCode]"
   ? { provinces: Province[] } | { errorCode: "CountryNotFound" }
+  : P extends "/api/timezones"
+  ? { timezones: string[] }
   : unknown;
 
 export type Message = Pick<
@@ -139,8 +142,6 @@ export type Body<
       dailyIntrosResetTime?: Date;
       timeZone?: string;
     }
-  : P extends "/api/countries"
-  ? {}
   : never;
 
 export type Params<P extends Path> = P extends

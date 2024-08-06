@@ -26,7 +26,8 @@
     "react-dom": "^18.3.1",
     "slugify": "^1.6.6",
     "stripe": "^16.5.0",
-    "svix": "^1.25.0"
+    "svix": "^1.25.0",
+    "timezones-list": "^3.0.3"
   },
   "devDependencies": {
     "@bull-board/api": "^5.21.3",

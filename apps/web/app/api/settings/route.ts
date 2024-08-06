@@ -18,7 +18,7 @@ export async function GET(): Promise<NextResponse<Data<"/api/settings">>> {
   return NextResponse.json({ settings });
 }
 
-// update current user profile
+// update current user settings
 export async function POST(
   request: Request
 ): Promise<NextResponse<Data<"/api/settings">>> {

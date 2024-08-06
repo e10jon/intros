@@ -7,13 +7,9 @@ export async function GET(): Promise<NextResponse<Data<"/api/profile">>> {
   const cnt = await Container.init();
   const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
-  let profile = await cnt.prisma.profile.findUnique({
+  const profile = await cnt.prisma.profile.findUniqueOrThrow({
     where: { userId: currentPrismaUser.id },
   });
-  if (!profile)
-    profile = await cnt.prisma.profile.create({
-      data: { userId: currentPrismaUser.id },
-    });
 
   return NextResponse.json({ profile });
 }

@@ -1,6 +1,6 @@
 import { introsFetch } from "@/lib/intros-fetch";
-import { useEffect } from "react";
-import { Button, Text, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Button, ScrollView, Text, TextInput, View } from "react-native";
 import { Formik, useFormikContext } from "formik";
 import {
   Body,
@@ -9,6 +9,7 @@ import {
   EmailFrequency,
 } from "@intros/types";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import { Picker } from "@react-native-picker/picker";
 
 const FetchSettings = () => {
   const { user } = useUser();
@@ -32,6 +33,72 @@ const FetchSettings = () => {
   return null;
 };
 
+const EmailFrequencyPicker = () => {
+  const { setFieldValue, values } = useFormikContext<Body<"/api/settings">>();
+
+  return (
+    <>
+      <Text>Email Frequency</Text>
+      <Picker
+        selectedValue={values.emailFrequency}
+        onValueChange={(itemValue) =>
+          setFieldValue("emailFrequency", itemValue)
+        }
+      >
+        {Object.values(EmailFrequency).map((value) => (
+          <Picker.Item key={value} label={value} value={value} />
+        ))}
+      </Picker>
+    </>
+  );
+};
+
+const TimeZonePicker = () => {
+  const { setFieldValue, values } = useFormikContext<Body<"/api/settings">>();
+
+  const [timeZones, setTimeZones] = useState<string[]>([]);
+
+  useEffect(() => {
+    introsFetch("/api/timezones").then(({ timezones }) => {
+      setTimeZones(timezones);
+    });
+  }, []);
+
+  return (
+    <>
+      <Text>Time Zone</Text>
+      <Picker
+        selectedValue={values.timeZone}
+        onValueChange={(itemValue) => setFieldValue("timeZone", itemValue)}
+      >
+        {timeZones.map((value) => (
+          <Picker.Item key={value} label={value} value={value} />
+        ))}
+      </Picker>
+    </>
+  );
+};
+
+const SendEmailsDayOfWeekPicker = () => {
+  const { setFieldValue, values } = useFormikContext<Body<"/api/settings">>();
+
+  return (
+    <>
+      <Text>Day of week to receive emails</Text>
+      <Picker
+        selectedValue={values.sendEmailsDayOfWeek}
+        onValueChange={(itemValue) =>
+          setFieldValue("sendEmailsDayOfWeek", itemValue)
+        }
+      >
+        {Object.values(DayOfWeek).map((value) => (
+          <Picker.Item key={value} label={value} value={value} />
+        ))}
+      </Picker>
+    </>
+  );
+};
+
 export default function EditSettings() {
   const updateSettings = async (values: Body<"/api/settings">) => {
     await introsFetch("/api/settings", {
@@ -41,19 +108,11 @@ export default function EditSettings() {
   };
 
   return (
-    <View>
+    <ScrollView>
       <SignedIn>
         <Text>Edit Settings</Text>
         <Formik<Body<"/api/settings">>
-          initialValues={{
-            pushToken: "",
-            emailFrequency: EmailFrequency.Weekly,
-            sendEmailsTime: new Date("12:00"),
-            sendEmailsDayOfWeek: DayOfWeek.Saturday,
-            dailyIntrosLimit: defaultDailyIntrosLimit,
-            dailyIntrosResetTime: new Date("12:00"),
-            timeZone: "America/New_York",
-          }}
+          initialValues={{}}
           onSubmit={updateSettings}
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -67,12 +126,19 @@ export default function EditSettings() {
                   value={values.pushToken}
                 />
 
-                <Text>Email Frequency</Text>
+                <Text>Daily intros limit</Text>
                 <TextInput
-                  onChangeText={handleChange("emailFrequency")}
-                  onBlur={handleBlur("emailFrequency")}
-                  value={values.emailFrequency}
+                  onChangeText={handleChange("dailyIntrosLimit")}
+                  onBlur={handleBlur("dailyIntrosLimit")}
+                  value={values.dailyIntrosLimit?.toString()}
+                  keyboardType="number-pad"
                 />
+
+                <TimeZonePicker />
+
+                <EmailFrequencyPicker />
+
+                <SendEmailsDayOfWeekPicker />
 
                 <Button onPress={handleSubmit as any} title="Submit" />
               </View>
@@ -84,6 +150,6 @@ export default function EditSettings() {
       <SignedOut>
         <Text>Need to log in</Text>
       </SignedOut>
-    </View>
+    </ScrollView>
   );
 }
