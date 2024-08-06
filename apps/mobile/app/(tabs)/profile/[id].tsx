@@ -86,6 +86,9 @@ export default function Profile() {
       <Text>Profile {id}</Text>
       <Text>Name: {profile?.name}</Text>
       <Text>Title: {profile?.title}</Text>
+      <Text>
+        Location: {profile?.province}, {profile?.country}
+      </Text>
       <Text>Bio: {profile?.bio}</Text>
       <Text>
         Can receive intros:{" "}
