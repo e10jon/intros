@@ -32,18 +32,26 @@ const LocationPicker = () => {
   useEffect(() => {
     introsFetch("/api/countries").then(({ countries }) => {
       setCountries(countries);
+      if (!values.country) setFieldValue("country", countries[0].name);
     });
   }, []);
 
-  useEffect(() => {
-    const country = countries.find(({ name }) => name === values.country);
+  const fetchProvinces = async () => {
+    const selectedCountryName = values.country;
+    if (!selectedCountryName) return;
+    const country = countries.find(({ name }) => name === selectedCountryName);
     if (!country) return;
-    introsFetch("/api/countries/[isoCode]", {
+
+    const res = await introsFetch("/api/countries/[isoCode]", {
       params: { isoCode: country.isoCode },
-    }).then((res) => {
-      if ("errorCode" in res) return;
-      setProvinces(res.provinces);
     });
+    if ("errorCode" in res) return;
+
+    setProvinces(res.provinces);
+  };
+
+  useEffect(() => {
+    fetchProvinces();
   }, [values.country]);
 
   return (
