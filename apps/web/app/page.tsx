@@ -1,5 +1,11 @@
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignOutButton,
+  SignedIn,
+  SignedOut,
+} from "@clerk/nextjs";
 import { Container } from "../container";
+import Link from "next/link";
 
 export default async function Page() {
   const cnt = await Container.init();
@@ -10,10 +16,19 @@ export default async function Page() {
       <SignedOut>
         <SignInButton />
       </SignedOut>
+
       <SignedIn>
-        <UserButton />
+        <div>
+          Signed in as {clerkUser?.emailAddresses[0]?.emailAddress}
+          <SignOutButton />
+        </div>
+
+        <ul>
+          <li>
+            <Link href="/reports">Reports</Link>
+          </li>
+        </ul>
       </SignedIn>
-      home {JSON.stringify(clerkUser)}
     </div>
   );
 }

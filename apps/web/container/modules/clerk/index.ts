@@ -5,6 +5,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { defaultDailyIntrosLimit, numTokensPerMonth } from "@intros/types";
 import { User } from "@prisma/client";
 import { addHours, addMonths, startOfDay, startOfToday } from "date-fns";
+import slugify from "slugify";
 
 export class ClerkModule {
   constructor(private cnt: Container) {}
@@ -18,6 +19,18 @@ export class ClerkModule {
     const emailAddress = payload.data.email_addresses[0];
     const clerkId = payload.data.id;
     const timeZone = payload.data.unsafe_metadata.timeZone;
+
+    const profileName = [
+      payload.data.first_name,
+      payload.data.last_name[0].toUpperCase(), // no . yet because of slug
+    ].join(" ");
+
+    // create a unique slug for the profile
+    let slug = slugify(profileName, { lower: true });
+    const numExistingSlugs = await this.cnt.prisma.profile.count({
+      where: { slug: { startsWith: slug } },
+    });
+    if (numExistingSlugs > 0) slug = `${slug}${numExistingSlugs}`;
 
     const email = emailAddress.email_address;
     const data = { email, phone: phoneNumber?.phone_number };
@@ -35,6 +48,12 @@ export class ClerkModule {
         tokens: {
           createMany: {
             data: [...new Array(numTokensPerMonth)].map(() => ({})),
+          },
+        },
+        profile: {
+          create: {
+            name: profileName,
+            slug: `${slug}.`, // add the . to the end
           },
         },
         settings: {

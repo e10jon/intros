@@ -11,3 +11,4 @@
 - Onboarding flow
 - Profiles searching/filtering
 - Push notifications
+- Emails

@@ -75,6 +75,7 @@ model User {
 
 model Profile {
   id                    String   @id @default(cuid())
+  slug                  String   @unique
   name                  String?
   photo                 String?
   title                 String?

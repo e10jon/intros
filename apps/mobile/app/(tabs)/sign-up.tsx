@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TextInput, Button, View, Text } from "react-native";
+import { TextInput, Button, View, Text, Alert } from "react-native";
 import { SignedIn, SignedOut, useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import { useCalendars } from "expo-localization";
@@ -9,6 +9,8 @@ export default function SignUp() {
   const router = useRouter();
   const calendars = useCalendars();
 
+  const [firstName, setFirstname] = useState("");
+  const [lastName, setLastName] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [pendingVerification, setPendingVerification] = useState(false);
@@ -16,9 +18,13 @@ export default function SignUp() {
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
+    if (!firstName) return Alert.alert("First Name is required");
+    if (!lastName) return Alert.alert("Last Name is required");
 
     try {
       await signUp.create({
+        firstName,
+        lastName,
         emailAddress,
         password,
         unsafeMetadata: {
@@ -72,15 +78,30 @@ export default function SignUp() {
               placeholder="Email..."
               onChangeText={(email) => setEmailAddress(email)}
             />
+
+            <TextInput
+              value={firstName}
+              placeholder="First Name..."
+              onChangeText={(name) => setFirstname(name)}
+            />
+
+            <TextInput
+              value={lastName}
+              placeholder="Last Name..."
+              onChangeText={(name) => setLastName(name)}
+            />
+
             <TextInput
               value={password}
               placeholder="Password..."
               secureTextEntry={true}
               onChangeText={(password) => setPassword(password)}
             />
+
             <Button title="Sign Up" onPress={onSignUpPress} />
           </>
         )}
+
         {pendingVerification && (
           <>
             <TextInput
@@ -88,6 +109,7 @@ export default function SignUp() {
               placeholder="Code..."
               onChangeText={(code) => setCode(code)}
             />
+
             <Button title="Verify Email" onPress={onPressVerify} />
           </>
         )}

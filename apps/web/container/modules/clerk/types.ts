@@ -43,12 +43,12 @@ export type WebhookPayload<
         }[];
         external_accounts: [];
         external_id: string | null;
-        first_name: string | null;
+        first_name: string;
         has_image: boolean;
         id: string;
         image_url: string;
         last_active_at: number;
-        last_name: string | null;
+        last_name: string;
         last_sign_in_at: number | null;
         locked: boolean;
         lockout_expires_in_seconds: number | null;
