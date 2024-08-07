@@ -1,6 +1,14 @@
+import { pull, pullAt } from "lodash";
 import { introsFetch } from "@/lib/intros-fetch";
 import { useEffect, useState } from "react";
-import { Button, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Formik, useFormikContext } from "formik";
 import { Body, Country, Province } from "@intros/shared";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
@@ -15,6 +23,7 @@ const FetchProfile = () => {
       setFieldValue("name", profile.name || "");
       setFieldValue("title", profile.title || "");
       setFieldValue("bio", profile.bio || "");
+      setFieldValue("interests", profile.interests || []);
       setFieldValue("province", profile.province || "");
       setFieldValue("country", profile.country || "");
     });
@@ -79,6 +88,48 @@ const LocationPicker = () => {
   );
 };
 
+const Interests = () => {
+  const { values, setFieldValue } = useFormikContext<Body<"/api/profile">>();
+
+  const [newInterest, setNewInterest] = useState("");
+
+  const handleRemovePress = (idx: number) => () => {
+    if (!values.interests) return;
+    const interestsCopy = values.interests.slice();
+    pullAt(interestsCopy, idx);
+    setFieldValue("interests", interestsCopy);
+  };
+
+  return (
+    <>
+      <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+        {values.interests?.map((interest, idx) => (
+          <TouchableOpacity
+            key={idx}
+            onPress={handleRemovePress(idx)}
+            style={{ marginHorizontal: 4 }}
+          >
+            <Text>{interest}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <TextInput
+        value={newInterest}
+        onChangeText={setNewInterest}
+        placeholder="Add Interest"
+        onSubmitEditing={() => {
+          if (!newInterest) return;
+          setFieldValue("interests", [
+            ...(values.interests || []),
+            newInterest,
+          ]);
+          setNewInterest("");
+        }}
+      />
+    </>
+  );
+};
+
 export default function EditProfile() {
   const updateBio = async (values: Body<"/api/profile">) => {
     await introsFetch("/api/profile", {
@@ -90,42 +141,47 @@ export default function EditProfile() {
   return (
     <View>
       <SignedIn>
-        <Text>Edit Profile</Text>
-        <Formik<Body<"/api/profile">> initialValues={{}} onSubmit={updateBio}>
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
-            <>
-              <FetchProfile />
+        <ScrollView>
+          <Text>Edit Profile</Text>
+          <Formik<Body<"/api/profile">> initialValues={{}} onSubmit={updateBio}>
+            {({ handleChange, handleBlur, handleSubmit, values }) => (
+              <>
+                <FetchProfile />
 
-              <View>
-                <Text>Name</Text>
-                <TextInput
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  value={values.name}
-                />
+                <View>
+                  <Text>Name</Text>
+                  <TextInput
+                    onChangeText={handleChange("name")}
+                    onBlur={handleBlur("name")}
+                    value={values.name}
+                  />
 
-                <Text>Title</Text>
-                <TextInput
-                  onChangeText={handleChange("title")}
-                  onBlur={handleBlur("title")}
-                  value={values.title}
-                />
+                  <Text>Title</Text>
+                  <TextInput
+                    onChangeText={handleChange("title")}
+                    onBlur={handleBlur("title")}
+                    value={values.title}
+                  />
 
-                <Text>Bio</Text>
-                <TextInput
-                  onChangeText={handleChange("bio")}
-                  onBlur={handleBlur("bio")}
-                  value={values.bio}
-                  multiline
-                />
+                  <Text>Bio</Text>
+                  <TextInput
+                    onChangeText={handleChange("bio")}
+                    onBlur={handleBlur("bio")}
+                    value={values.bio}
+                    multiline
+                  />
 
-                <LocationPicker />
+                  <Text>Interests</Text>
+                  <Interests />
 
-                <Button onPress={handleSubmit as any} title="Submit" />
-              </View>
-            </>
-          )}
-        </Formik>
+                  <LocationPicker />
+
+                  <Button onPress={handleSubmit as any} title="Submit" />
+                </View>
+              </>
+            )}
+          </Formik>
+        </ScrollView>
       </SignedIn>
 
       <SignedOut>

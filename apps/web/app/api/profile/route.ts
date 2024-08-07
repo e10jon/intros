@@ -23,6 +23,12 @@ export async function POST(
   const cnt = await Container.init();
   const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
+  // if there are no interests and an incoming bio, use AI to generate the interests
+  if (body.bio && (!body.interests || !body.interests.length)) {
+    const interests = await cnt.ai.extractInterestsFromBio(body.bio);
+    body.interests = interests;
+  }
+
   const profile = await cnt.prisma.profile.update({
     where: { userId: currentPrismaUser.id },
     data: body,

@@ -122,6 +122,7 @@ export type Body<
   ? {
       name?: string;
       bio?: string;
+      interests?: string[];
       title?: string;
       country?: string;
       province?: string;
