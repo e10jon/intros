@@ -7,6 +7,7 @@
 ## TODOs
 
 - Admin web interface for reporting
+- Suspended users
 - Onboarding flow
 - Profiles searching/filtering
 - Push notifications

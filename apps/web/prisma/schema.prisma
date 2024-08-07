@@ -19,8 +19,8 @@ enum ReportStatus {
 
 enum UserStatus {
   Active
-  UnderReview
   Suspended
+  Banned
 }
 
 enum EmailFrequency {
@@ -46,13 +46,14 @@ enum MessageSpecialCode {
 }
 
 model User {
-  id               String    @id @default(cuid())
-  clerkId          String    @unique
-  email            String?   @unique
-  phone            String?   @unique
-  stripeCustomerId String?   @unique
+  id               String     @id @default(cuid())
+  clerkId          String     @unique
+  email            String?    @unique
+  phone            String?    @unique
+  stripeCustomerId String?    @unique
   nextTokenReset   DateTime?
-  isAdmin          Boolean   @default(false)
+  isAdmin          Boolean    @default(false)
+  status           UserStatus @default(Active)
   suspendedUntil   DateTime?
 
   createdAt DateTime @default(now())
@@ -70,7 +71,7 @@ model User {
   settings                  UserSettings?
 
   @@index([nextTokenReset]) // for the add-monthly-tokens job
-  @@index([suspendedUntil]) // lots of queries will filter by this
+  @@index([suspendedUntil]) // for the unsuspend-users job
 }
 
 model Profile {
