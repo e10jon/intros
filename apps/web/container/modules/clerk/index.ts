@@ -43,6 +43,7 @@ export class ClerkModule {
       create: {
         ...data,
         clerkId,
+        status: "Active",
         nextTokenReset: addMonths(now, 1),
         // create the monthly tokens for new users
         tokens: {
@@ -62,6 +63,8 @@ export class ClerkModule {
             timeZone,
             dailyIntrosResetTime: addHours(startOfDay(now), 5), // 5 am default
             sendEmailsTime: addHours(startOfDay(now), 12), // 12 pm default
+            emailFrequency: "Weekly",
+            sendEmailsDayOfWeek: "Friday",
           },
         },
       },
