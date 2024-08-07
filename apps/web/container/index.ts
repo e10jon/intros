@@ -17,6 +17,10 @@ import {
   nextWednesday,
   startOfTomorrow,
 } from "date-fns";
+import {
+  profileInterestsArrayToString,
+  profileInterestsStringToArray,
+} from "@/lib/profile-interests";
 
 export class Container {
   private constructor() {}
@@ -37,7 +41,7 @@ export class Container {
         interestsArray: {
           needs: { interests: true },
           compute({ interests }) {
-            return interests?.split(profileInterestsDelimiter) || [];
+            return profileInterestsStringToArray(interests);
           },
         },
       },
@@ -45,7 +49,7 @@ export class Container {
     model: {
       profile: {
         interestsArrayToString(interestsArray?: string[]) {
-          return interestsArray?.join(profileInterestsDelimiter);
+          return profileInterestsArrayToString(interestsArray);
         },
       },
       user: {
@@ -202,5 +206,3 @@ export class Container {
 const argHasJobOptions = (arg: unknown): arg is { jobOptions: JobsOptions } => {
   return !!(arg && typeof arg === "object" && "jobOptions" in arg);
 };
-
-const profileInterestsDelimiter = "|";
