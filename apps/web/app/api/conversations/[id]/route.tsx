@@ -51,11 +51,18 @@ export async function GET(
       }, [])
     )
   );
-  const profiles = await cnt.prisma.profile.findMany({
-    where: {
-      id: { in: profileIdsInConversation },
-    },
-  });
+  const profiles = await cnt.prisma.profile
+    .findMany({
+      where: {
+        id: { in: profileIdsInConversation },
+      },
+    })
+    .then((profiles) =>
+      profiles.map(({ interestsArray, ...profile }) => ({
+        ...profile,
+        interests: interestsArray,
+      }))
+    );
 
   return NextResponse.json({ conversation, messages, profiles });
 }

@@ -1,10 +1,12 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pg_trgm]
 }
 
 enum ReportStrategy {
@@ -79,17 +81,17 @@ model User {
 }
 
 model Profile {
-  id                    String   @id @default(cuid())
-  slug                  String   @unique
+  id                    String  @id @default(cuid())
+  slug                  String  @unique
   name                  String?
   photo                 String?
   title                 String?
   bio                   String?
-  interests             String[]
+  interests             String?
   country               String?
   province              String?
   responseRate          Float?
-  numNewIntrosRemaining Int      @default(1)
+  numNewIntrosRemaining Int     @default(1)
 
   userId String @unique
 
@@ -100,6 +102,11 @@ model Profile {
   reports Report[]
 
   @@index([userId])
+  @@index([name(ops: raw("gist_trgm_ops"))], type: Gist) // for profile search
+  @@index([title(ops: raw("gist_trgm_ops"))], type: Gist) // for profile search
+  @@index([bio(ops: raw("gist_trgm_ops"))], type: Gist) // for profile search
+  @@index([interests(ops: raw("gist_trgm_ops"))], type: Gist) // for profile search
+  @@index([country, province]) // for profile search
 }
 
 model Conversation {

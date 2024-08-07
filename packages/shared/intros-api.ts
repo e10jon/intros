@@ -3,7 +3,7 @@ import {
   EmailFrequency,
   Conversation,
   Message as PrismaMessage,
-  Profile,
+  Profile as PrismaProfile,
   ConversationNotification,
   UserSettings,
 } from "@prisma/client";
@@ -31,6 +31,8 @@ type Paths = typeof paths;
 export type Path = Paths[number];
 
 export type Method = "GET" | "POST";
+
+type Profile = Omit<PrismaProfile, "interests"> & { interests: string[] };
 
 export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
   ? { hello: "there" }

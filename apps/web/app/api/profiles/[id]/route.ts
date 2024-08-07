@@ -9,9 +9,10 @@ export async function GET(
   const cnt = await Container.init();
   const currentPrismaUser = await cnt.currentPrismaUser;
 
-  const profile = await cnt.prisma.profile.findUniqueOrThrow({
-    where: { id: params.id },
-  });
+  const { interestsArray, ...profile } =
+    await cnt.prisma.profile.findUniqueOrThrow({
+      where: { id: params.id },
+    });
 
   const conversation = currentPrismaUser
     ? await cnt.prisma.conversation.findFirst({
@@ -34,5 +35,8 @@ export async function GET(
       })
     : null;
 
-  return NextResponse.json({ profile, conversation });
+  return NextResponse.json({
+    profile: { ...profile, interests: interestsArray },
+    conversation,
+  });
 }

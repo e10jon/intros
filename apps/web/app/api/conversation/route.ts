@@ -79,13 +79,20 @@ export async function POST(
         select: selectArgsForMessage,
       }),
     ],
-    cnt.prisma.profile.findMany({
-      where: {
-        id: {
-          in: [prismaUser.id, json.toUserId],
+    cnt.prisma.profile
+      .findMany({
+        where: {
+          id: {
+            in: [prismaUser.id, json.toUserId],
+          },
         },
-      },
-    }),
+      })
+      .then((profiles) =>
+        profiles.map(({ interestsArray, ...profile }) => ({
+          ...profile,
+          interests: interestsArray,
+        }))
+      ),
     // sync with clerk to update token availability
     cnt.clerk.syncWithClerk({
       prismaUser,

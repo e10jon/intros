@@ -4,6 +4,15 @@ import { Data } from "@intros/shared";
 
 export async function GET(): Promise<NextResponse<Data<"/api/profiles">>> {
   const cnt = await Container.init();
-  const profiles = await cnt.prisma.profile.findMany();
+
+  const profiles = await cnt.prisma.profile
+    .findMany()
+    .then((profiles) =>
+      profiles.map(({ interestsArray, ...profile }) => ({
+        ...profile,
+        interests: interestsArray,
+      }))
+    );
+
   return NextResponse.json({ profiles });
 }

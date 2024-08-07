@@ -1,5 +1,5 @@
 import { auth, User as ClerkUser, currentUser } from "@clerk/nextjs/server";
-import { Prisma, User, UserSettings } from "@prisma/client";
+import { Prisma, Profile, User, UserSettings } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { JobsOptions, Queue } from "bullmq";
 import { defaultQueueName } from "@/bullmq/queue";
@@ -32,7 +32,22 @@ export class Container {
   }
 
   private prismaExtension = Prisma.defineExtension({
+    result: {
+      profile: {
+        interestsArray: {
+          needs: { interests: true },
+          compute({ interests }) {
+            return interests?.split(profileInterestsDelimiter) || [];
+          },
+        },
+      },
+    },
     model: {
+      profile: {
+        interestsArrayToString(interestsArray?: string[]) {
+          return interestsArray?.join(profileInterestsDelimiter);
+        },
+      },
       user: {
         calculateNextIntrosResetAt(settings: {
           dailyIntrosResetTime: NonNullable<
@@ -85,27 +100,6 @@ export class Container {
           date.setTime(settings.sendEmailsTime.getTime());
 
           return date;
-        },
-      },
-    },
-    query: {
-      token: {
-        async createMany({ query, args }) {
-          const res = await query(args);
-
-          // TODO: count the args by userId and update clerk with the new number
-          const userIds = Array.isArray(args.data)
-            ? args.data.map((d) => d.userId)
-            : [args.data.userId];
-          const userIdsGroup = userIds.reduce<{ [userId: string]: number }>(
-            (obj, userId) => {
-              obj[userId] = (obj[userId] || 0) + 1;
-              return obj;
-            },
-            {}
-          );
-
-          return res;
         },
       },
     },
@@ -208,3 +202,5 @@ export class Container {
 const argHasJobOptions = (arg: unknown): arg is { jobOptions: JobsOptions } => {
   return !!(arg && typeof arg === "object" && "jobOptions" in arg);
 };
+
+const profileInterestsDelimiter = "|";

@@ -7,11 +7,14 @@ export async function GET(): Promise<NextResponse<Data<"/api/profile">>> {
   const cnt = await Container.init();
   const currentPrismaUser = await cnt.getCurrentPrismaUserOrThrow();
 
-  const profile = await cnt.prisma.profile.findUniqueOrThrow({
-    where: { userId: currentPrismaUser.id },
-  });
+  const { interestsArray, ...profile } =
+    await cnt.prisma.profile.findUniqueOrThrow({
+      where: { userId: currentPrismaUser.id },
+    });
 
-  return NextResponse.json({ profile });
+  return NextResponse.json({
+    profile: { ...profile, interests: interestsArray },
+  });
 }
 
 // update current user profile
@@ -29,10 +32,15 @@ export async function POST(
     body.interests = interests;
   }
 
-  const profile = await cnt.prisma.profile.update({
+  const { interestsArray, ...profile } = await cnt.prisma.profile.update({
     where: { userId: currentPrismaUser.id },
-    data: body,
+    data: {
+      ...body,
+      interests: cnt.prisma.profile.interestsArrayToString(body.interests),
+    },
   });
 
-  return NextResponse.json({ profile });
+  return NextResponse.json({
+    profile: { ...profile, interests: interestsArray },
+  });
 }
