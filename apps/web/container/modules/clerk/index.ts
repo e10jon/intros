@@ -4,7 +4,15 @@ import { Container } from "../..";
 import { clerkClient } from "@clerk/nextjs/server";
 import { defaultDailyIntrosLimit, numTokensPerMonth } from "@intros/shared";
 import { User } from "@prisma/client";
-import { addHours, addMonths, startOfDay, startOfToday } from "date-fns";
+import {
+  addHours,
+  addMonths,
+  addWeeks,
+  nextFriday,
+  startOfDay,
+  startOfToday,
+  startOfTomorrow,
+} from "date-fns";
 import slugify from "slugify";
 
 export class ClerkModule {
@@ -37,6 +45,20 @@ export class ClerkModule {
 
     const now = new Date();
 
+    const defaultEmailFrequencySettings = {
+      sendEmailsTime: addHours(startOfDay(now), 12), // 12 pm default
+      emailFrequency: "Weekly",
+      sendEmailsDayOfWeek: "Friday",
+    } as const;
+    const nextEmailSendAt = this.cnt.prisma.user.calculateNextEmailSendAt(
+      defaultEmailFrequencySettings
+    );
+
+    const dailyIntrosResetTime = addHours(startOfDay(now), 5); // 5 am default
+    const nextIntrosResetAt = this.cnt.prisma.user.calculateNextIntrosResetAt({
+      dailyIntrosResetTime,
+    });
+
     // create or update the database user
     const prismaUser = await this.cnt.prisma.user.upsert({
       where: { clerkId },
@@ -44,7 +66,9 @@ export class ClerkModule {
         ...data,
         clerkId,
         status: "Active",
+        nextEmailSendAt,
         nextTokenReset: addMonths(now, 1),
+        nextIntrosResetAt,
         // create the monthly tokens for new users
         tokens: {
           createMany: {
@@ -61,10 +85,8 @@ export class ClerkModule {
           create: {
             dailyIntrosLimit: defaultDailyIntrosLimit,
             timeZone,
-            dailyIntrosResetTime: addHours(startOfDay(now), 5), // 5 am default
-            sendEmailsTime: addHours(startOfDay(now), 12), // 12 pm default
-            emailFrequency: "Weekly",
-            sendEmailsDayOfWeek: "Friday",
+            dailyIntrosResetTime,
+            ...defaultEmailFrequencySettings,
           },
         },
       },

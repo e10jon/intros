@@ -49,11 +49,16 @@ export class JobsModule {
   }
 
   async resetProfilesNumNewIntrosRemaining() {
-    // runs every minute on user's dailyIntrosResetTime
+    // find all users with nextIntrosResetAt < now
+    // add the tokens
+    // set the user's nextIntrosResetAt to the next time
   }
 
   async sendEmails() {
-    // runs every minute on user's sendEmailsTime
+    // find all users with nextEmailSendAt < now
+    // include their conversation notifications and settings
+    // send an email per user
+    // set the user's nextEmailSendAt to the next time
   }
 
   async recreateCronJobs() {
@@ -78,12 +83,14 @@ export class JobsModule {
       }),
       this.cnt.addJob("sendEmails", {
         jobOptions: {
-          repeat: { every: 1000 * 60 }, // every minute
+          repeat: { every: 1000 * 60 * 60 }, // every hour
           attempts: 1,
         },
       }),
     ]);
   }
+
+  async unsuspendUsers() {}
 
   async sandbox() {
     const response = await this.cnt.ai.reviewUserReport({

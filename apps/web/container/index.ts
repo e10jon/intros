@@ -1,10 +1,22 @@
 import { auth, User as ClerkUser, currentUser } from "@clerk/nextjs/server";
-import { Prisma, User } from "@prisma/client";
+import { Prisma, User, UserSettings } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { JobsOptions, Queue } from "bullmq";
 import { defaultQueueName } from "@/bullmq/queue";
 import { connection } from "@/bullmq/connection";
 import { ClerkModule, JobsModule, AiModule, StripeModule } from "./modules";
+import {
+  addMonths,
+  addWeeks,
+  nextFriday,
+  nextMonday,
+  nextSaturday,
+  nextSunday,
+  nextThursday,
+  nextTuesday,
+  nextWednesday,
+  startOfTomorrow,
+} from "date-fns";
 
 export class Container {
   private constructor() {}
@@ -20,6 +32,62 @@ export class Container {
   }
 
   private prismaExtension = Prisma.defineExtension({
+    model: {
+      user: {
+        calculateNextIntrosResetAt(settings: {
+          dailyIntrosResetTime: NonNullable<
+            UserSettings["dailyIntrosResetTime"]
+          >;
+        }) {
+          const date = startOfTomorrow();
+          date.setTime(settings.dailyIntrosResetTime.getTime());
+          return date;
+        },
+        calculateNextEmailSendAt(settings: {
+          emailFrequency: NonNullable<UserSettings["emailFrequency"]>;
+          sendEmailsDayOfWeek: NonNullable<UserSettings["sendEmailsDayOfWeek"]>;
+          sendEmailsTime: NonNullable<UserSettings["sendEmailsTime"]>;
+        }) {
+          const date = (() => {
+            if (settings.emailFrequency === "Daily") {
+              return startOfTomorrow();
+            }
+            if (
+              settings.emailFrequency === "Weekly" ||
+              settings.emailFrequency === "Monthly"
+            ) {
+              const startDate =
+                settings.emailFrequency === "Weekly"
+                  ? addWeeks(new Date(), 1)
+                  : addMonths(new Date(), 1);
+
+              if (settings.sendEmailsDayOfWeek === "Sunday")
+                return nextSunday(startDate);
+              if (settings.sendEmailsDayOfWeek === "Monday")
+                return nextMonday(startDate);
+              if (settings.sendEmailsDayOfWeek === "Tuesday")
+                return nextTuesday(startDate);
+              if (settings.sendEmailsDayOfWeek === "Wednesday")
+                return nextWednesday(startDate);
+              if (settings.sendEmailsDayOfWeek === "Thursday")
+                return nextThursday(startDate);
+              if (settings.sendEmailsDayOfWeek === "Friday")
+                return nextFriday(startDate);
+              if (settings.sendEmailsDayOfWeek === "Saturday")
+                return nextSaturday(startDate);
+            }
+
+            throw new Error(
+              `Invalid EmailFrequency ${settings.emailFrequency}`
+            );
+          })();
+
+          date.setTime(settings.sendEmailsTime.getTime());
+
+          return date;
+        },
+      },
+    },
     query: {
       token: {
         async createMany({ query, args }) {
