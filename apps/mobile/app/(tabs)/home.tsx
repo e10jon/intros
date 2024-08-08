@@ -7,6 +7,7 @@ import {
   RefreshControl,
   ScrollView,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { Data } from "@intros/shared";
@@ -18,19 +19,36 @@ export default function Home() {
   const [profiles, setProfiles] = useState<
     Data<"/api/profiles">["profiles"] | null
   >(null);
-  const [refreshing, setRefreshing] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [searchName, setSearchName] = useState("");
 
   const handleRefresh = () => {
     setRefreshing(true);
   };
 
-  useEffect(() => {
-    if (!refreshing) return;
-    introsFetch("/api/profiles").then((data) => {
-      setProfiles(data.profiles);
-      setRefreshing(false);
+  const fetchProfiles = async () => {
+    if (refreshing) return;
+
+    setRefreshing(true);
+    const { profiles } = await introsFetch(`/api/profiles`, {
+      query: { name: searchName },
     });
-  }, [refreshing]);
+
+    setRefreshing(false);
+    setProfiles(profiles);
+  };
+
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
+
+  const handleSearchNameChange = (text: string) => {
+    setSearchName(text);
+  };
+
+  const handleSearchPress = async () => {
+    await fetchProfiles();
+  };
 
   return (
     <ScrollView
@@ -53,6 +71,16 @@ export default function Home() {
         <Text>You are not signed in.</Text>
       </SignedOut>
 
+      <View>
+        <TextInput
+          placeholder="Name"
+          value={searchName}
+          onChangeText={handleSearchNameChange}
+          onSubmitEditing={handleSearchPress}
+        />
+        <Button title="Search" onPress={handleSearchPress} />
+      </View>
+
       {profiles && (
         <View>
           <Text>Profiles</Text>
@@ -62,6 +90,7 @@ export default function Home() {
                 <Pressable>
                   <Text>{profile.name}</Text>
                   <Text>{profile.title}</Text>
+                  <Text>{profile.interests.join(", ")}</Text>
                 </Pressable>
               </Link>
             </View>

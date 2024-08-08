@@ -167,6 +167,10 @@ export type Params<P extends Path> = P extends
   ? { isoCode: string }
   : never;
 
+export type Query<P extends Path> = P extends "/api/profiles"
+  ? { name?: string }
+  : never;
+
 export { EmailFrequency, DayOfWeek };
 
 export const errorCodes = [

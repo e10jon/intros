@@ -1,6 +1,6 @@
 import { getClerkInstance } from "@clerk/clerk-expo";
 import { getEnvCred } from "../get-env-cred";
-import { Body, Data, Path, Params, Method } from "@intros/shared";
+import { Body, Data, Path, Params, Method, Query } from "@intros/shared";
 
 export const host = `https://${getEnvCred("introsApiHost")}`;
 export const urlScheme = "exp://"; // TODO: "intros://";
@@ -11,6 +11,7 @@ export const introsFetch = async <P extends Path, M extends Method = "GET">(
     method?: M;
     body?: Body<P, M> extends never ? never : Body<P, M>;
     params?: Params<P> extends never ? never : Params<P>;
+    query?: Query<P> extends never ? never : Query<P>;
   }
 ) => {
   const clerk = getClerkInstance();
@@ -24,11 +25,22 @@ export const introsFetch = async <P extends Path, M extends Method = "GET">(
     });
   })();
 
-  const url = `${host}${pathAfterParams}`;
+  const search = new URLSearchParams();
+  if (opts?.query) {
+    for (const [key, val] of Object.entries(opts.query)) {
+      if (!val) continue;
+      search.set(key, val);
+    }
+  }
+  const query = search.toString();
+
+  const finalPath = query ? `${pathAfterParams}?${query}` : pathAfterParams;
+
+  const url = `${host}${finalPath}`;
   const method = opts?.method ?? "GET";
   const body = opts?.body ? JSON.stringify(opts.body) : undefined;
 
-  console.log(`[introsFetch] ${method} ${pathAfterParams} ${body || ""}`);
+  console.log(`[introsFetch] ${method} ${finalPath} ${body || ""}`);
 
   const res = await fetch(url, {
     method,
