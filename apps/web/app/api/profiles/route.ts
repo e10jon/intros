@@ -11,18 +11,33 @@ export async function GET(
 
   const searchParams = request.nextUrl.searchParams;
   const nameQuery = searchParams.get("name");
-  // TODO: combine queries for name, interests, bio, region, country
+  const interestsQuery = searchParams.get("interests");
 
   let profiles: (Omit<Profile, "interests"> & { interests: string[] })[] = [];
 
-  if (nameQuery) {
-    const sim = Prisma.sql`${nameQuery} <<-> name`;
+  if (nameQuery || interestsQuery) {
+    const nameSim = Prisma.sql`${nameQuery} <<-> name`;
+    const nameSelect = nameQuery
+      ? Prisma.sql`${nameSim} AS "nameDistance"`
+      : "-1";
+    const interestsSim = interestsQuery
+      ? Prisma.sql`${interestsQuery} <<-> interests`
+      : null;
+    const interestsSelect = interestsQuery
+      ? Prisma.sql`${interestsSim} AS "interestsDistance"`
+      : "-1";
+    const nameWhere = nameQuery
+      ? Prisma.sql`${nameSim} < ${defaultMaxDistance}`
+      : Prisma.sql`1=1`;
+    const interestsWhere = interestsQuery
+      ? Prisma.sql`${interestsSim} < ${defaultMaxDistance}`
+      : Prisma.sql`1=1`;
 
     profiles = await cnt.prisma.$queryRaw<
-      (Profile & { distance: number })[]
-    >`SELECT *, ${sim} AS "distance" FROM "Profile" WHERE ${sim} < ${defaultMaxDistance} ORDER BY "distance" ASC;`.then(
+      (Profile & { nameDistance: number; interestsDistance: number })[]
+    >`SELECT *, ${nameSelect}, ${interestsSelect} FROM "Profile" WHERE ${nameWhere} AND ${interestsWhere};`.then(
       (profiles) =>
-        profiles.map(({ distance, ...profile }) => ({
+        profiles.map(({ interestsDistance, ...profile }) => ({
           ...profile,
           interests: profileInterestsStringToArray(profile.interests),
         }))

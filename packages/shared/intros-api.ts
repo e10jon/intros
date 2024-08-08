@@ -168,7 +168,7 @@ export type Params<P extends Path> = P extends
   : never;
 
 export type Query<P extends Path> = P extends "/api/profiles"
-  ? { name?: string }
+  ? { name?: string; interests?: string }
   : never;
 
 export { EmailFrequency, DayOfWeek };

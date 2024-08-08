@@ -21,20 +21,18 @@ export default function Home() {
   >(null);
   const [refreshing, setRefreshing] = useState(false);
   const [searchName, setSearchName] = useState("");
+  const [searchInterests, setSearchInterests] = useState("");
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setRefreshing(true);
+    await fetchProfiles();
+    setRefreshing(false);
   };
 
   const fetchProfiles = async () => {
-    if (refreshing) return;
-
-    setRefreshing(true);
     const { profiles } = await introsFetch(`/api/profiles`, {
-      query: { name: searchName },
+      query: { name: searchName, interests: searchInterests },
     });
-
-    setRefreshing(false);
     setProfiles(profiles);
   };
 
@@ -42,9 +40,9 @@ export default function Home() {
     fetchProfiles();
   }, []);
 
-  const handleSearchNameChange = (text: string) => {
-    setSearchName(text);
-  };
+  const handleSearchNameChange = (text: string) => setSearchName(text);
+  const handleSearchInterestsChange = (text: string) =>
+    setSearchInterests(text);
 
   const handleSearchPress = async () => {
     await fetchProfiles();
@@ -76,6 +74,12 @@ export default function Home() {
           placeholder="Name"
           value={searchName}
           onChangeText={handleSearchNameChange}
+          onSubmitEditing={handleSearchPress}
+        />
+        <TextInput
+          placeholder="Interests"
+          value={searchInterests}
+          onChangeText={handleSearchInterestsChange}
           onSubmitEditing={handleSearchPress}
         />
         <Button title="Search" onPress={handleSearchPress} />
