@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { Data } from "@intros/shared";
 import { Link } from "expo-router";
+import LocationPicker from "@/components/LocationPicker";
 
 export default function Home() {
   const { user } = useUser();
@@ -22,6 +23,9 @@ export default function Home() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchName, setSearchName] = useState("");
   const [searchInterests, setSearchInterests] = useState("");
+  const [searchCountryName, setSearchCountryName] = useState("");
+  const [searchProvinceName, setSearchProvinceName] = useState("");
+  const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -76,12 +80,35 @@ export default function Home() {
           onChangeText={handleSearchNameChange}
           onSubmitEditing={handleSearchPress}
         />
+
         <TextInput
           placeholder="Interests"
           value={searchInterests}
           onChangeText={handleSearchInterestsChange}
           onSubmitEditing={handleSearchPress}
         />
+
+        <Text>
+          Location: {searchCountryName}, {searchProvinceName}
+        </Text>
+        <Button
+          title="Location"
+          onPress={() => setIsLocationPickerOpen(true)}
+        />
+        {isLocationPickerOpen && (
+          <LocationPicker
+            selectedCountryName={searchCountryName}
+            selectedProvinceName={searchProvinceName}
+            onCountryValueChange={(country) =>
+              setSearchCountryName(country?.name || "")
+            }
+            onProvinceValueChange={(province) =>
+              setSearchProvinceName(province?.name || "")
+            }
+            onModalClose={() => setIsLocationPickerOpen(false)}
+          />
+        )}
+
         <Button title="Search" onPress={handleSearchPress} />
       </View>
 
