@@ -41,7 +41,16 @@ export type Data<P extends Path, M extends Method = "GET"> = P extends "/api"
   : P extends "/api/profile"
   ? { profile: Profile }
   : P extends "/api/profiles"
-  ? { profiles: Profile[] }
+  ? {
+      profiles: (Profile & {
+        distances?: {
+          name?: number;
+          interests?: number;
+          country?: number;
+          province?: number;
+        };
+      })[];
+    }
   : P extends "/api/profiles/[id]"
   ? { profile: Profile; conversation: Conversation | null }
   : P extends "/api/conversations"
@@ -168,7 +177,7 @@ export type Params<P extends Path> = P extends
   : never;
 
 export type Query<P extends Path> = P extends "/api/profiles"
-  ? { name?: string; interests?: string }
+  ? { name?: string; interests?: string; country?: string; province?: string }
   : never;
 
 export { EmailFrequency, DayOfWeek };

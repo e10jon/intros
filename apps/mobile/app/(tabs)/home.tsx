@@ -35,7 +35,12 @@ export default function Home() {
 
   const fetchProfiles = async () => {
     const { profiles } = await introsFetch(`/api/profiles`, {
-      query: { name: searchName, interests: searchInterests },
+      query: {
+        name: searchName,
+        interests: searchInterests,
+        country: searchCountryName,
+        province: searchProvinceName,
+      },
     });
     setProfiles(profiles);
   };
@@ -120,8 +125,12 @@ export default function Home() {
               <Link href={`/profile/${profile.id}`} asChild>
                 <Pressable>
                   <Text>{profile.name}</Text>
+                  <Text>
+                    {profile.country}, {profile.province}
+                  </Text>
                   <Text>{profile.title}</Text>
                   <Text>{profile.interests.join(", ")}</Text>
+                  <Text>{JSON.stringify(profile.distances)}</Text>
                 </Pressable>
               </Link>
             </View>
