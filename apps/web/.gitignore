@@ -1,7 +1,0 @@
-.env
-.next/
-node_modules/
-npm-debug.*
-.DS_Store
-tsconfig.tsbuildinfo
-ngrok.yml

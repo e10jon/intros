@@ -1,0 +1,17 @@
+{
+  "name": "@intros/container",
+  "type": "module",
+  "private": true,
+  "main": "dist/container.js",
+  "scripts": {
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "prisma": "^5.18.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.18.0",
+    "bullmq": "^5.12.9"
+  }
+}

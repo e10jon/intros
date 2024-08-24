@@ -1,82 +1,49 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
-import React from "react";
-
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { Text } from "react-native";
 
 export default function TabLayout() {
   return (
     <Tabs>
       <Tabs.Screen
-        name="home"
+        name="settings"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-            />
+          title: "Settings",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="gear" color={color} />
           ),
         }}
       />
 
       <Tabs.Screen
-        name="sign-up"
+        name="data"
         options={{
-          title: "Sign Up",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? "add" : "add-outline"} color={color} />
+          title: "Data",
+          headerLeft: () => <Text>Left</Text>,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="database" color={color} />
           ),
         }}
       />
 
       <Tabs.Screen
-        name="sign-in"
+        name="routines"
         options={{
-          title: "Sign In",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "log-in" : "log-in-outline"}
-              color={color}
-            />
+          title: "Routines",
+          headerLeft: () => <Text>Left</Text>,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="pencil-square" color={color} />
           ),
         }}
       />
 
       <Tabs.Screen
-        name="verify-phone"
+        name="progress"
         options={{
-          title: "Verify Phone",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "phone-portrait" : "phone-portrait-outline"}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="payment"
-        options={{
-          title: "Payment",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "card" : "card-outline"}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="edit-profile"
-        options={{
-          title: "Edit Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "person-circle" : "person-circle-outline"}
-              color={color}
-            />
+          title: "Progress",
+          headerLeft: () => <Text>Left</Text>,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="calendar" color={color} />
           ),
         }}
       />
@@ -85,41 +52,14 @@ export default function TabLayout() {
         name="inbox"
         options={{
           title: "Inbox",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "file-tray" : "file-tray-outline"}
-              color={color}
-            />
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="inbox" color={color} />
           ),
         }}
       />
 
       <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? "cog" : "cog-outline"} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="sign-up-after"
-        options={{
-          href: null,
-        }}
-      />
-
-      <Tabs.Screen
-        name="profile/[id]"
-        options={{
-          href: null,
-        }}
-      />
-
-      <Tabs.Screen
-        name="conversation/[id]"
+        name="index"
         options={{
           href: null,
         }}

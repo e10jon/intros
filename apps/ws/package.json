@@ -1,0 +1,17 @@
+{
+  "name": "@intros/ws",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "check-types": "tsc --noEmit --watch"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.12",
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@intros/shared": "workspace:*",
+    "ws": "^8.18.0"
+  }
+}

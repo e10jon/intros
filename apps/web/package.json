@@ -1,43 +1,30 @@
 {
   "name": "@intros/web",
+  "private": "true",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "ngrok": "ngrok start web --config ngrok.yml",
-    "worker": "tsx watch --clear-screen=false -r dotenv/config bullmq/worker.ts",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "check-types": "tsc --noEmit -w",
-    "job": "tsx -r dotenv/config lib/cli-job-runner.ts",
-    "recreate-cron-jobs": "npm run job recreateCronJobs",
-    "bull-board": "tsx -r dotenv/config bullmq/bull-board.ts"
-  },
-  "dependencies": {
-    "@clerk/nextjs": "^5.2.8",
-    "@prisma/client": "^5.17.0",
-    "bullmq": "^5.11.0",
-    "country-state-city": "^3.2.1",
-    "date-fns": "^3.6.0",
-    "ioredis": "^5.4.1",
-    "next": "^14.2.5",
-    "nodemailer": "^6.9.14",
-    "openai": "^4.54.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "slugify": "^1.6.6",
-    "stripe": "^16.5.0",
-    "svix": "^1.25.0",
-    "timezones-list": "^3.0.3"
+    "dev": "remix vite:dev",
+    "build": "remix vite:build",
+    "start": "remix-serve ./build/server/index.js",
+    "check-types": "tsc --noEmit --watch"
   },
   "devDependencies": {
-    "@bull-board/api": "^5.21.3",
-    "@bull-board/fastify": "^5.21.3",
-    "@intros/shared": "*",
-    "@types/node": "20.14.12",
-    "@types/react": "18.3.3",
-    "fastify": "^4.28.1",
-    "prisma": "^5.17.0",
-    "tsx": "^4.16.2",
-    "typescript": "5.5.4"
+    "@remix-run/dev": "^2.11.2",
+    "@total-typescript/tsconfig": "^1.0.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "vite": "^5.4.1"
+  },
+  "dependencies": {
+    "@intros/container": "workspace:*",
+    "@intros/shared": "workspace:*",
+    "@remix-run/node": "^2.11.2",
+    "@remix-run/react": "^2.11.2",
+    "@remix-run/serve": "^2.11.2",
+    "isbot": "^4.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
   }
 }
