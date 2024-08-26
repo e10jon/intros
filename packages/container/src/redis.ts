@@ -8,6 +8,6 @@ export const connection = new Redis(redisUrl, {
   maxRetriesPerRequest: null,
 });
 
-export const defaultQueueName = "Default";
+export const defaultQueueName = "IntrosDefault";
 
 export const createQueue = () => new Queue(defaultQueueName, { connection });

@@ -4,8 +4,7 @@
   "main": "entry.js",
   "scripts": {
     "check-types": "tsc --noEmit --watch",
-    "dev": "expo run:ios",
-    "android": "expo run:android",
+    "dev": "expo start --ios",
     "ios": "expo run:ios"
   },
   "dependencies": {
