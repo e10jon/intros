@@ -1,7 +1,10 @@
 {
   "extends": "@total-typescript/tsconfig/bundler/dom",
   "compilerOptions": {
-    "jsx": "react-native"
+    "jsx": "react-native",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "**/*.ts",

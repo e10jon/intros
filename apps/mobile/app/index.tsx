@@ -1,6 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function Home() {
+  const { user } = useUser();
+  console.log({ user });
+
   return (
     <View style={styles.container}>
       <Text>Home</Text>

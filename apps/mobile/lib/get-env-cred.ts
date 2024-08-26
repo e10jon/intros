@@ -1,5 +1,5 @@
 const env = {
-  stychPublicToken: process.env.EXPO_PUBLIC_STYTCH_PUBLIC_TOKEN,
+  clerkPublishableKey: process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY,
 };
 
 export const getEnvCred = (key: keyof typeof env) => {
