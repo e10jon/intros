@@ -2,7 +2,7 @@
   "name": "@intros/shared",
   "type": "module",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "dev": "tsc --watch"
   },
