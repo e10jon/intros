@@ -1,9 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
-import { useUser } from "@clerk/clerk-expo";
+import { useEffect } from "react";
+import { introsFetch } from "@intros/shared";
 
 export default function Home() {
-  const { user } = useUser();
-  console.log({ user });
+  useEffect(() => {
+    introsFetch("/ GET", {}).then((res) => {
+      console.log(res);
+    });
+  }, []);
 
   return (
     <View style={styles.container}>

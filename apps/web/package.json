@@ -11,7 +11,9 @@
   "devDependencies": {
     "@remix-run/dev": "^2.11.2",
     "@total-typescript/tsconfig": "^1.0.4",
+    "@types/morgan": "^1.9.9",
     "autoprefixer": "^10.4.20",
+    "morgan": "^1.10.0",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
     "vite": "^5.4.1"

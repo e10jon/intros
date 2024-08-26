@@ -7,10 +7,12 @@
     "dev": "tsc --watch"
   },
   "devDependencies": {
+    "@remix-run/node": "^2.11.2",
     "prisma": "^5.18.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@clerk/remix": "^4.2.16",
     "@prisma/client": "^5.18.0",
     "bullmq": "^5.12.9"
   }

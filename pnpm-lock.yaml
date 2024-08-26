@@ -158,9 +158,15 @@ importers:
       '@total-typescript/tsconfig':
         specifier: ^1.0.4
         version: 1.0.4
+      '@types/morgan':
+        specifier: ^1.9.9
+        version: 1.9.9
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.41)
+      morgan:
+        specifier: ^1.10.0
+        version: 1.10.0
       postcss:
         specifier: ^8.4.41
         version: 8.4.41
@@ -192,6 +198,9 @@ importers:
 
   packages/container:
     dependencies:
+      '@clerk/remix':
+        specifier: ^4.2.16
+        version: 4.2.16(@remix-run/react@2.11.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4))(@remix-run/server-runtime@2.11.2(typescript@5.5.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@prisma/client':
         specifier: ^5.18.0
         version: 5.18.0(prisma@5.18.0)
@@ -199,6 +208,9 @@ importers:
         specifier: ^5.12.9
         version: 5.12.9
     devDependencies:
+      '@remix-run/node':
+        specifier: ^2.11.2
+        version: 2.11.2(typescript@5.5.4)
       prisma:
         specifier: ^5.18.0
         version: 5.18.0
@@ -796,6 +808,10 @@ packages:
   '@bull-board/ui@5.21.4':
     resolution: {integrity: sha512-z2otIDhN4EpKRXeBjZZrqbOPtX5pFwkeEs6uGG77/4m6bSjUl+RTRFpzBSVxrwctqxge+S+CNOCmfDiDMGqi8Q==}
 
+  '@clerk/backend@1.8.0':
+    resolution: {integrity: sha512-csIF8eHM84JPP6ZuOdE37saDRIY7Dp5B8Yt26FZSehCveUTeI16iCCbVb8Co4hutlKZa08Mcb2GEcXavRnkvfA==}
+    engines: {node: '>=18.17.0'}
+
   '@clerk/clerk-expo@2.2.1':
     resolution: {integrity: sha512-AZ2WMXglK7q3tSfMmcjoiFjXIqkqac/Ict/X13fYWAJZ247KKdHMWZKcmzbkyS/svaRj30fzXlos5F+mr2TNiA==}
     engines: {node: '>=18.17.0'}
@@ -830,6 +846,15 @@ packages:
   '@clerk/localizations@2.6.1':
     resolution: {integrity: sha512-CsYkl7HUuqXYl86Y2aOTQE4kiHp2u8/AI4VpBFO9M7rZHd3PrbOBcJw2S1KHo+tLnRCoJi1mxkor8t+J55DyQQ==}
     engines: {node: '>=18.17.0'}
+
+  '@clerk/remix@4.2.16':
+    resolution: {integrity: sha512-pKDpYIQ3wOXcWjMLSKrXNX1vJ5TvJhvwF2ELQdH7zMNgoEPy/n1YMwOJXlX9HLxS3KdBAfsQLVAssJcML9fhRg==}
+    engines: {node: '>=18.17.0'}
+    peerDependencies:
+      '@remix-run/react': ^2.0.0
+      '@remix-run/server-runtime': ^2.0.0
+      react: '>=18'
+      react-dom: '>=18'
 
   '@clerk/shared@2.5.2':
     resolution: {integrity: sha512-3+I5vMhkn3wSqCuoxIIXRma3m8zpLJBH11MO2uxKOAeZJRyeALY0jGPeyptskl+Fl9j9Rtan0OWJIisMN8TiAA==}
@@ -2040,6 +2065,9 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
+  '@types/morgan@1.9.9':
+    resolution: {integrity: sha512-iRYSDKVaC6FkGSpEVVIvrRGw0DfJMiQzIn3qr2G5B3C//AWkulhXgaBd7tS9/J79GWSYMTHGs7PfI5b3Y8m+RQ==}
+
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
 
@@ -2659,6 +2687,10 @@ packages:
     resolution: {integrity: sha512-78KWk9T26NhzXtuL26cIJ8/qNHANyJ/ZYrmEXFzUmhZdjpBv+DlWlOANRTGBt48YcyslsLrj0bMLFTmXvLRCOw==}
     engines: {node: '>=6.6.0'}
 
+  cookie@0.5.0:
+    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+    engines: {node: '>= 0.6'}
+
   cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
@@ -2875,6 +2907,9 @@ packages:
 
   dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
+
+  dot-case@3.0.4:
+    resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
 
   dotenv-expand@11.0.6:
     resolution: {integrity: sha512-8NHi73otpWsZGBSZwwknTXS5pqMOrk9+Ssrna8xCaxkzEpU9OTf9R5ArQGVw03//Zmk9MOwLPng9WwndvpAJ5g==}
@@ -4109,6 +4144,9 @@ packages:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
 
+  lower-case@2.0.2:
+    resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
+
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
@@ -4133,6 +4171,10 @@ packages:
 
   makeerror@1.0.12:
     resolution: {integrity: sha512-JmqCvUhmt43madlpFzG4BQzG2Z3m6tvQDNKdClZnO3VbIudJYmxsT0FNJMeiB2+JTSlTQTSbU8QdesVmwJcmLg==}
+
+  map-obj@4.3.0:
+    resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
+    engines: {node: '>=8'}
 
   markdown-extensions@1.1.1:
     resolution: {integrity: sha512-WWC0ZuMzCyDHYCasEGs4IPvLyTGftYwh6wIEOULOF0HXcqZlhwRzrK0w2VUlxWA98xnvb/jszw4ZSkJ6ADpM6Q==}
@@ -4509,6 +4551,9 @@ packages:
 
   nice-try@1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
+
+  no-case@3.0.4:
+    resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
 
   nocache@3.0.4:
     resolution: {integrity: sha512-WDD0bdg9mbq6F4mRxEYcPWwfA1vxd0mrvKOyxI7Xj/atfRHVeutzuWByG//jfm4uPzp0y4Kj051EORCBSQMycw==}
@@ -5430,6 +5475,13 @@ packages:
     resolution: {integrity: sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==}
     engines: {node: '>=8.0.0'}
 
+  snake-case@3.0.4:
+    resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
+
+  snakecase-keys@5.4.4:
+    resolution: {integrity: sha512-YTywJG93yxwHLgrYLZjlC75moVEX04LZM4FHfihjHe1FCXm+QaLOFfSf535aXOAd0ArVQMWUAe8ZPm4VtWyXaA==}
+    engines: {node: '>=12'}
+
   source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
     engines: {node: '>=0.10.0'}
@@ -5826,6 +5878,10 @@ packages:
   type-fest@0.7.1:
     resolution: {integrity: sha512-Ne2YiiGN8bmrmJJEuTWTLJR32nh/JdL1+PSicowtNb0WFpn59GK8/lfD61bVtzguz7b3PBt74nxpv/Pw5po5Rg==}
     engines: {node: '>=8'}
+
+  type-fest@2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
 
   type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
@@ -6976,6 +7032,17 @@ snapshots:
     dependencies:
       '@bull-board/api': 5.21.4(@bull-board/ui@5.21.4)
 
+  '@clerk/backend@1.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@clerk/shared': 2.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@clerk/types': 4.14.0
+      cookie: 0.5.0
+      snakecase-keys: 5.4.4
+      tslib: 2.4.1
+    transitivePeerDependencies:
+      - react
+      - react-dom
+
   '@clerk/clerk-expo@2.2.1(@types/react@18.2.79)(expo-auth-session@5.5.2(expo@51.0.28(@babel/core@7.25.2)))(expo-secure-store@13.0.2(expo@51.0.28(@babel/core@7.25.2)))(expo-web-browser@13.0.3(expo@51.0.28(@babel/core@7.25.2)))(react-dom@18.2.0(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@clerk/clerk-js': 5.15.1(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -7028,9 +7095,30 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       tslib: 2.4.1
 
+  '@clerk/clerk-react@5.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@clerk/shared': 2.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@clerk/types': 4.14.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tslib: 2.4.1
+
   '@clerk/localizations@2.6.1':
     dependencies:
       '@clerk/types': 4.14.0
+
+  '@clerk/remix@4.2.16(@remix-run/react@2.11.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4))(@remix-run/server-runtime@2.11.2(typescript@5.5.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@clerk/backend': 1.8.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@clerk/clerk-react': 5.4.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@clerk/shared': 2.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@clerk/types': 4.14.0
+      '@remix-run/react': 2.11.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)
+      '@remix-run/server-runtime': 2.11.2(typescript@5.5.4)
+      cookie: 0.5.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      tslib: 2.4.1
 
   '@clerk/shared@2.5.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
@@ -7042,6 +7130,17 @@ snapshots:
     optionalDependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+
+  '@clerk/shared@2.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@clerk/types': 4.14.0
+      glob-to-regexp: 0.4.1
+      js-cookie: 3.0.5
+      std-env: 3.7.0
+      swr: 2.2.5(react@18.3.1)
+    optionalDependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   '@clerk/types@4.14.0':
     dependencies:
@@ -8689,6 +8788,10 @@ snapshots:
 
   '@types/mime@1.3.5': {}
 
+  '@types/morgan@1.9.9':
+    dependencies:
+      '@types/node': 22.4.0
+
   '@types/ms@0.7.34': {}
 
   '@types/node-forge@1.3.11':
@@ -9398,6 +9501,8 @@ snapshots:
 
   cookie-signature@1.2.1: {}
 
+  cookie@0.5.0: {}
+
   cookie@0.6.0: {}
 
   copy-to-clipboard@3.3.3:
@@ -9585,6 +9690,11 @@ snapshots:
       path-type: 4.0.0
 
   dlv@1.1.3: {}
+
+  dot-case@3.0.4:
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.6.3
 
   dotenv-expand@11.0.6:
     dependencies:
@@ -11060,6 +11170,10 @@ snapshots:
     dependencies:
       js-tokens: 4.0.0
 
+  lower-case@2.0.2:
+    dependencies:
+      tslib: 2.6.3
+
   lru-cache@10.4.3: {}
 
   lru-cache@5.1.1:
@@ -11082,6 +11196,8 @@ snapshots:
   makeerror@1.0.12:
     dependencies:
       tmpl: 1.0.5
+
+  map-obj@4.3.0: {}
 
   markdown-extensions@1.1.1: {}
 
@@ -11759,6 +11875,11 @@ snapshots:
   nested-error-stacks@2.0.1: {}
 
   nice-try@1.0.5: {}
+
+  no-case@3.0.4:
+    dependencies:
+      lower-case: 2.0.2
+      tslib: 2.6.3
 
   nocache@3.0.4: {}
 
@@ -12767,6 +12888,17 @@ snapshots:
 
   slugify@1.6.6: {}
 
+  snake-case@3.0.4:
+    dependencies:
+      dot-case: 3.0.4
+      tslib: 2.6.3
+
+  snakecase-keys@5.4.4:
+    dependencies:
+      map-obj: 4.3.0
+      snake-case: 3.0.4
+      type-fest: 2.19.0
+
   source-map-js@1.2.0: {}
 
   source-map-support@0.5.21:
@@ -12967,6 +13099,12 @@ snapshots:
       react: 18.2.0
       use-sync-external-store: 1.2.2(react@18.2.0)
 
+  swr@2.2.5(react@18.3.1):
+    dependencies:
+      client-only: 0.0.1
+      react: 18.3.1
+      use-sync-external-store: 1.2.2(react@18.3.1)
+
   tabbable@6.2.0: {}
 
   tailwindcss@3.4.10:
@@ -13163,6 +13301,8 @@ snapshots:
 
   type-fest@0.7.1: {}
 
+  type-fest@2.19.0: {}
+
   type-is@1.6.18:
     dependencies:
       media-typer: 0.3.0
@@ -13326,6 +13466,10 @@ snapshots:
   use-sync-external-store@1.2.2(react@18.2.0):
     dependencies:
       react: 18.2.0
+
+  use-sync-external-store@1.2.2(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   util-deprecate@1.0.2: {}
 
