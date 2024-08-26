@@ -1,6 +1,6 @@
 import { Button, Text, View } from "react-native";
 import {
-  nhFetch,
+  introsFetch,
   type DescribeRoomMessageSchema,
   type JoinRoomMessageSchema,
   type LeaveRoomMessageSchema,

@@ -6,7 +6,7 @@ import {
   routes,
 } from "./routes.js";
 
-export async function nhFetch<P extends RoutePaths, B extends RouteBody<P>>(
+export async function introsFetch<P extends RoutePaths, B extends RouteBody<P>>(
   pathMethod: P,
   opts: RouteBody<P> extends never ? { body?: never } : { body: B }
 ): Promise<SafeParseReturnType<unknown, RouteData<P>>> {

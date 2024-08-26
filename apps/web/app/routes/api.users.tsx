@@ -11,7 +11,7 @@ export const loader = async (
 ): Promise<TypedResponse<RouteData<"/users GET">>> => {
   const cnt = new Container();
   const users = await cnt.prisma.user.findMany({
-    select: { id: true, name: true },
+    select: { id: true },
   });
   return json({ users });
 };
